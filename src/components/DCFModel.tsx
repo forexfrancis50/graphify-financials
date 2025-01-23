@@ -13,6 +13,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { SensitivityAnalysis } from "./SensitivityAnalysis";
+import { ComparableAnalysis } from "./ComparableAnalysis";
 
 interface DCFInputs {
   initialRevenue: number;
@@ -97,6 +99,32 @@ export function DCFModel() {
     setProjections(newProjections);
   };
 
+  const calculateEnterpriseValue = (discountRate: number, growthRate: number) => {
+    const years = 5;
+    let currentRevenue = inputs.initialRevenue;
+    let totalValue = 0;
+
+    for (let year = 1; year <= years; year++) {
+      currentRevenue *= (1 + inputs.growthRate / 100);
+      const operatingIncome = currentRevenue * (inputs.operatingMargin / 100);
+      const taxAmount = operatingIncome * (inputs.taxRate / 100);
+      const previousRevenue = year === 1 ? inputs.initialRevenue : currentRevenue / (1 + inputs.growthRate / 100);
+      const workingCapitalChange = (currentRevenue - previousRevenue) * (inputs.workingCapitalPercent / 100);
+      const capex = currentRevenue * (inputs.capexPercent / 100);
+      const freeCashFlow = operatingIncome - taxAmount - workingCapitalChange - capex;
+
+      if (year === years) {
+        const terminalFCF = freeCashFlow * (1 + growthRate / 100);
+        const terminalValue = terminalFCF / (discountRate / 100 - growthRate / 100);
+        totalValue += terminalValue / Math.pow(1 + discountRate / 100, year);
+      }
+
+      totalValue += freeCashFlow / Math.pow(1 + discountRate / 100, year);
+    }
+
+    return Math.round(totalValue);
+  };
+
   return (
     <div className="p-6 space-y-6 animate-fade-in">
       <h1 className="text-3xl font-bold text-primary">DCF Model</h1>
@@ -106,6 +134,8 @@ export function DCFModel() {
           <TabsTrigger value="inputs">Model Inputs</TabsTrigger>
           <TabsTrigger value="historical">Historical Data</TabsTrigger>
           <TabsTrigger value="results">Results</TabsTrigger>
+          <TabsTrigger value="sensitivity">Sensitivity</TabsTrigger>
+          <TabsTrigger value="comps">Comparable Analysis</TabsTrigger>
         </TabsList>
 
         <TabsContent value="inputs">
@@ -351,6 +381,19 @@ export function DCFModel() {
               Enter inputs and calculate to see projections
             </div>
           )}
+        </TabsContent>
+
+        <TabsContent value="sensitivity">
+          <SensitivityAnalysis
+            baseValue={projections[projections.length - 1]?.enterpriseValue || 0}
+            discountRates={[8, 10, 12, 14, 16]}
+            growthRates={[1, 2, 3, 4, 5]}
+            calculateEnterpriseValue={calculateEnterpriseValue}
+          />
+        </TabsContent>
+
+        <TabsContent value="comps">
+          <ComparableAnalysis />
         </TabsContent>
       </Tabs>
     </div>

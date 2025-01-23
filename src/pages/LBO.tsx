@@ -1,5 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { LBOModel } from "@/components/LBOModel";
 
 const LBO = () => {
   return (
@@ -9,12 +10,7 @@ const LBO = () => {
         <main className="flex-1 overflow-auto">
           <div className="p-4">
             <SidebarTrigger />
-            <div className="animate-fade-in">
-              <h1 className="text-3xl font-bold text-primary">LBO Model</h1>
-              <p className="text-gray-600 mt-4">
-                LBO model implementation coming in the next iteration
-              </p>
-            </div>
+            <LBOModel />
           </div>
         </main>
       </div>

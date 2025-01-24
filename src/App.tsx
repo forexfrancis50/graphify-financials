@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import DCF from "./pages/DCF";
 import LBO from "./pages/LBO";
 import MA from "./pages/MA";
+import Restructuring from "./pages/Restructuring";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/dcf" element={<DCF />} />
           <Route path="/lbo" element={<LBO />} />
           <Route path="/ma" element={<MA />} />
+          <Route path="/restructuring" element={<Restructuring />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

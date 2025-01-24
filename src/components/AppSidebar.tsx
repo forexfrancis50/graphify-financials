@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Calculator, LineChart, GitMerge } from "lucide-react";
+import { Calculator, LineChart, GitMerge, Scissors } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const items = [
@@ -26,6 +26,11 @@ const items = [
     title: "M&A Model",
     path: "/ma",
     icon: GitMerge,
+  },
+  {
+    title: "Restructuring Model",
+    path: "/restructuring",
+    icon: Scissors,
   },
 ];
 

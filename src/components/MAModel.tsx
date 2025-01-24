@@ -1,18 +1,11 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { TargetCompany } from "./ma/TargetCompany";
+import { AcquirerCompany } from "./ma/AcquirerCompany";
+import { DealStructure } from "./ma/DealStructure";
+import { Synergies } from "./ma/Synergies";
+import { Results } from "./ma/Results";
 
 interface MAInputs {
   // Target Company
@@ -117,183 +110,10 @@ export function MAModel() {
 
         <TabsContent value="inputs">
           <div className="grid md:grid-cols-2 gap-6">
-            <Card className="p-6 space-y-4">
-              <h2 className="text-xl font-semibold">Target Company</h2>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="targetRevenue">Revenue ($)</Label>
-                  <Input
-                    id="targetRevenue"
-                    type="number"
-                    value={inputs.targetRevenue}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, targetRevenue: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="targetEBITDA">EBITDA ($)</Label>
-                  <Input
-                    id="targetEBITDA"
-                    type="number"
-                    value={inputs.targetEBITDA}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, targetEBITDA: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="targetShares">Shares Outstanding</Label>
-                  <Input
-                    id="targetShares"
-                    type="number"
-                    value={inputs.targetShares}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, targetShares: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="targetPrice">Share Price ($)</Label>
-                  <Input
-                    id="targetPrice"
-                    type="number"
-                    value={inputs.targetPrice}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, targetPrice: Number(e.target.value) })
-                    }
-                  />
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 space-y-4">
-              <h2 className="text-xl font-semibold">Acquirer Company</h2>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="acquirerRevenue">Revenue ($)</Label>
-                  <Input
-                    id="acquirerRevenue"
-                    type="number"
-                    value={inputs.acquirerRevenue}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, acquirerRevenue: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="acquirerEBITDA">EBITDA ($)</Label>
-                  <Input
-                    id="acquirerEBITDA"
-                    type="number"
-                    value={inputs.acquirerEBITDA}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, acquirerEBITDA: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="acquirerShares">Shares Outstanding</Label>
-                  <Input
-                    id="acquirerShares"
-                    type="number"
-                    value={inputs.acquirerShares}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, acquirerShares: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="acquirerPrice">Share Price ($)</Label>
-                  <Input
-                    id="acquirerPrice"
-                    type="number"
-                    value={inputs.acquirerPrice}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, acquirerPrice: Number(e.target.value) })
-                    }
-                  />
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 space-y-4">
-              <h2 className="text-xl font-semibold">Deal Structure</h2>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="cashConsideration">Cash Consideration ($)</Label>
-                  <Input
-                    id="cashConsideration"
-                    type="number"
-                    value={inputs.cashConsideration}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, cashConsideration: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="stockConsideration">Stock Consideration ($)</Label>
-                  <Input
-                    id="stockConsideration"
-                    type="number"
-                    value={inputs.stockConsideration}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, stockConsideration: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="premiumPaid">Premium Paid (%)</Label>
-                  <Input
-                    id="premiumPaid"
-                    type="number"
-                    value={inputs.premiumPaid}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, premiumPaid: Number(e.target.value) })
-                    }
-                  />
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 space-y-4">
-              <h2 className="text-xl font-semibold">Synergies & Integration</h2>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="revenueSynergies">Revenue Synergies ($)</Label>
-                  <Input
-                    id="revenueSynergies"
-                    type="number"
-                    value={inputs.revenueSynergies}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, revenueSynergies: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="costSynergies">Cost Synergies ($)</Label>
-                  <Input
-                    id="costSynergies"
-                    type="number"
-                    value={inputs.costSynergies}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, costSynergies: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="integrationCosts">Integration Costs ($)</Label>
-                  <Input
-                    id="integrationCosts"
-                    type="number"
-                    value={inputs.integrationCosts}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, integrationCosts: Number(e.target.value) })
-                    }
-                  />
-                </div>
-              </div>
-            </Card>
+            <TargetCompany inputs={inputs} setInputs={setInputs} />
+            <AcquirerCompany inputs={inputs} setInputs={setInputs} />
+            <DealStructure inputs={inputs} setInputs={setInputs} />
+            <Synergies inputs={inputs} setInputs={setInputs} />
           </div>
 
           <Button onClick={calculateMA} className="w-full mt-6">
@@ -302,77 +122,7 @@ export function MAModel() {
         </TabsContent>
 
         <TabsContent value="results">
-          {projections.length > 0 ? (
-            <div className="space-y-6">
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Deal Summary</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Target EV</p>
-                    <p className="text-lg font-semibold">${projections[0].targetEV.toLocaleString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Acquirer EV</p>
-                    <p className="text-lg font-semibold">${projections[0].acquirerEV.toLocaleString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Total Consideration</p>
-                    <p className="text-lg font-semibold">${projections[0].totalConsideration.toLocaleString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">New Shares Issued</p>
-                    <p className="text-lg font-semibold">{projections[0].newShares.toLocaleString()}</p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Pro Forma Metrics</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Combined Revenue</p>
-                    <p className="text-lg font-semibold">${projections[0].combinedRevenue.toLocaleString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Combined EBITDA</p>
-                    <p className="text-lg font-semibold">${projections[0].combinedEBITDA.toLocaleString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Combined Net Income</p>
-                    <p className="text-lg font-semibold">${projections[0].combinedNetIncome.toLocaleString()}</p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Accretion/Dilution Analysis</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Target EPS</p>
-                    <p className="text-lg font-semibold">${projections[0].targetEPS.toFixed(2)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Acquirer EPS</p>
-                    <p className="text-lg font-semibold">${projections[0].acquirerEPS.toFixed(2)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Pro Forma EPS</p>
-                    <p className="text-lg font-semibold">${projections[0].proFormaEPS.toFixed(2)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Accretion/(Dilution)</p>
-                    <p className={`text-lg font-semibold ${projections[0].accretionDilution >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {projections[0].accretionDilution.toFixed(2)}%
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          ) : (
-            <div className="text-center p-12 text-gray-500">
-              Enter inputs and calculate to see M&A analysis
-            </div>
-          )}
+          <Results projections={projections} />
         </TabsContent>
       </Tabs>
     </div>

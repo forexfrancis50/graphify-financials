@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import DCF from "./pages/DCF";
 import LBO from "./pages/LBO";
+import MA from "./pages/MA";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/dcf" element={<DCF />} />
           <Route path="/lbo" element={<LBO />} />
+          <Route path="/ma" element={<MA />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

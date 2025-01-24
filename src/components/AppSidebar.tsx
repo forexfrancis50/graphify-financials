@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Calculator, LineChart, GitMerge, Scissors } from "lucide-react";
+import { Calculator, LineChart, GitMerge, Scissors, DollarSign } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const items = [
@@ -16,6 +16,11 @@ const items = [
     title: "DCF Model",
     path: "/dcf",
     icon: Calculator,
+  },
+  {
+    title: "DDM Model",
+    path: "/ddm",
+    icon: DollarSign,
   },
   {
     title: "LBO Model",

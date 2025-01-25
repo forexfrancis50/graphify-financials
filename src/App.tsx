@@ -13,6 +13,8 @@ import Restructuring from "./pages/Restructuring";
 import DDM from "./pages/DDM";
 import AccretionDilution from "./pages/AccretionDilution";
 import IPO from "./pages/IPO";
+import CapitalBudgeting from "./pages/CapitalBudgeting";
+import Options from "./pages/Options";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +37,8 @@ const App = () => (
                 <Route path="/ddm" element={<DDM />} />
                 <Route path="/accretion-dilution" element={<AccretionDilution />} />
                 <Route path="/ipo" element={<IPO />} />
+                <Route path="/capital-budgeting" element={<CapitalBudgeting />} />
+                <Route path="/options" element={<Options />} />
               </Routes>
             </main>
           </div>

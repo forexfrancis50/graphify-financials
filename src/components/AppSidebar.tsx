@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Calculator, LineChart, GitMerge, Scissors, DollarSign, TrendingUp, Rocket } from "lucide-react";
+import { Calculator, LineChart, GitMerge, Scissors, DollarSign, TrendingUp, Rocket, Briefcase, Binary } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const items = [
@@ -46,6 +46,16 @@ const items = [
     title: "IPO Model",
     path: "/ipo",
     icon: Rocket,
+  },
+  {
+    title: "Capital Budgeting",
+    path: "/capital-budgeting",
+    icon: Briefcase,
+  },
+  {
+    title: "Options Pricing",
+    path: "/options",
+    icon: Binary,
   },
 ];
 

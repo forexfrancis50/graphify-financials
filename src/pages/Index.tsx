@@ -12,7 +12,11 @@ import {
   Briefcase,
   Binary,
   ArrowRight,
+  Activity,
 } from "lucide-react";
+import { DataChart } from "@/components/shared/DataChart";
+import { MetricsCard } from "@/components/shared/MetricsCard";
+import { DataTable } from "@/components/shared/DataTable";
 
 const modelCards = [
   {
@@ -83,6 +87,41 @@ const modelCards = [
 const Index = () => {
   const navigate = useNavigate();
 
+  const sampleChartData = Array.from({ length: 12 }, (_, i) => ({
+    month: `${i + 1}`,
+    value: Math.floor(Math.random() * 1000) + 500,
+  }));
+
+  const marketMetrics = [
+    {
+      title: "Market Cap",
+      value: "$2.4T",
+      description: "Total market capitalization",
+      icon: TrendingUp,
+      trend: { direction: "up", value: "+2.5%" },
+    },
+    {
+      title: "Trading Volume",
+      value: "$85.2B",
+      description: "24h trading volume",
+      icon: Activity,
+      trend: { direction: "down", value: "-1.2%" },
+    },
+  ];
+
+  const recentTransactions = [
+    { type: "Buy", asset: "AAPL", amount: "$1,250", date: "2024-02-20" },
+    { type: "Sell", asset: "MSFT", amount: "$980", date: "2024-02-19" },
+    { type: "Buy", asset: "GOOGL", amount: "$2,100", date: "2024-02-18" },
+  ];
+
+  const tableColumns = [
+    { key: "type", header: "Type" },
+    { key: "asset", header: "Asset" },
+    { key: "amount", header: "Amount" },
+    { key: "date", header: "Date" },
+  ];
+
   return (
     <div className="min-h-screen bg-background p-6 animate-fade-in">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -94,6 +133,34 @@ const Index = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Comprehensive tools for financial analysis, valuation, and strategic decision-making
           </p>
+        </section>
+
+        {/* Market Overview */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {marketMetrics.map((metric) => (
+            <MetricsCard key={metric.title} {...metric} />
+          ))}
+        </section>
+
+        {/* Market Trend Chart */}
+        <section className="mb-8">
+          <DataChart
+            data={sampleChartData}
+            type="area"
+            xKey="month"
+            yKey="value"
+            title="Market Trend Analysis"
+            gradient={{ from: "#059669", to: "#047857" }}
+          />
+        </section>
+
+        {/* Recent Transactions */}
+        <section className="mb-8">
+          <DataTable
+            data={recentTransactions}
+            columns={tableColumns}
+            title="Recent Transactions"
+          />
         </section>
 
         {/* Quick Access Grid */}

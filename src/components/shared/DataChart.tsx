@@ -38,7 +38,6 @@ export function DataChart({
   children,
 }: DataChartProps) {
   const ChartComponent = type === "area" ? AreaChart : LineChart;
-  const DataComponent = type === "area" ? Area : Line;
 
   return (
     <Card className="p-6 w-full">
@@ -61,12 +60,20 @@ export function DataChart({
           />
           <Tooltip />
           <Legend />
-          <DataComponent
-            type="monotone"
-            dataKey={yKey}
-            stroke={gradient.from}
-            fill="url(#colorGradient)"
-          />
+          {type === "area" ? (
+            <Area
+              type="monotone"
+              dataKey={yKey}
+              stroke={gradient.from}
+              fill="url(#colorGradient)"
+            />
+          ) : (
+            <Line
+              type="monotone"
+              dataKey={yKey}
+              stroke={gradient.from}
+            />
+          )}
           {children}
         </ChartComponent>
       </ResponsiveContainer>

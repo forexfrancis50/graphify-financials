@@ -6,13 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { Slider } from "@/components/ui/slider";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { ExportButtons } from "@/components/shared/ExportButtons";
 import {
   LineChart,
   Line,
@@ -150,14 +144,48 @@ export function OptionsModel() {
     return x > 0 ? 1 - probability : probability;
   };
 
+  const getExportData = () => {
+    if (!results) return [];
+    
+    return [
+      {
+        metric: "Option Price",
+        value: results.optionPrice.toFixed(2),
+      },
+      {
+        metric: "Delta",
+        value: results.delta.toFixed(4),
+      },
+      {
+        metric: "Gamma",
+        value: results.gamma.toFixed(4),
+      },
+      {
+        metric: "Theta",
+        value: results.theta.toFixed(4),
+      },
+      {
+        metric: "Vega",
+        value: results.vega.toFixed(4),
+      },
+      {
+        metric: "Rho",
+        value: results.rho.toFixed(4),
+      },
+    ];
+  };
+
   return (
     <div className="p-6 space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-primary">Options Pricing Model</h1>
-        <div className="flex items-center gap-2">
-          <Info className="h-5 w-5 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">Black-Scholes Model</span>
-        </div>
+        {results && (
+          <ExportButtons
+            title="Options Analysis"
+            data={getExportData()}
+            columns={["metric", "value"]}
+          />
+        )}
       </div>
 
       <Tabs defaultValue="inputs" className="w-full">

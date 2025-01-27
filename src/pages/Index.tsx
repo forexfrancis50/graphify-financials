@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { BatchDataOperations } from "@/components/shared/BatchDataOperations";
 import { FinancialMetrics } from "@/components/shared/FinancialMetrics";
+import { ReportGenerator } from "@/components/shared/ReportGenerator";
 import {
   Calculator,
   LineChart,
@@ -81,6 +82,9 @@ export default function Index() {
           Comprehensive tools for financial analysis and valuation
         </p>
       </section>
+
+      {/* Report Generator */}
+      <ReportGenerator />
 
       {/* Batch Data Operations */}
       <BatchDataOperations />

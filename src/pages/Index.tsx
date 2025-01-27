@@ -3,8 +3,6 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { BatchDataOperations } from "@/components/shared/BatchDataOperations";
 import { FinancialMetrics } from "@/components/shared/FinancialMetrics";
-import { ReportGenerator } from "@/components/shared/ReportGenerator";
-import { RiskAssessment } from "@/components/shared/RiskAssessment";
 import {
   Calculator,
   LineChart,
@@ -71,15 +69,7 @@ export default function Index() {
     receivables: 200000000,
     payables: 150000000,
     operatingCashFlow: 250000000,
-    capex: 100000000,
-    currentRatio: 2.0,
-    quickRatio: 1.25,
-    debtToEquity: 0.8,
-    interestCoverage: 8.5,
-    operatingMargin: 0.20,
-    returnOnEquity: 0.15,
-    betaValue: 1.2,
-    volatility: 0.25
+    capex: 100000000
   };
 
   return (
@@ -92,17 +82,11 @@ export default function Index() {
         </p>
       </section>
 
-      {/* Report Generator */}
-      <ReportGenerator />
-
-      {/* Risk Assessment */}
-      <RiskAssessment financialData={sampleFinancialData} />
+      {/* Financial Metrics */}
+      <FinancialMetrics data={sampleFinancialData} />
 
       {/* Batch Data Operations */}
       <BatchDataOperations />
-
-      {/* Financial Metrics */}
-      <FinancialMetrics data={sampleFinancialData} />
 
       {/* Quick Access Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -11,7 +11,7 @@ import {
 import { useState } from "react";
 
 interface ModelDataTransferProps {
-  currentModel: keyof ModelData;
+  currentModel: string;
   onDataTransfer: (data: any) => void;
 }
 
@@ -21,13 +21,13 @@ export function ModelDataTransfer({ currentModel, onDataTransfer }: ModelDataTra
   const [selectedModel, setSelectedModel] = useState<string>("");
 
   const availableModels = Object.keys(modelData).filter(
-    (model) => model !== currentModel && modelData[model as keyof ModelData]
+    (model) => model !== currentModel && modelData[model as keyof typeof modelData]
   );
 
   const handleTransfer = () => {
     if (!selectedModel) return;
     
-    const data = getModelData(selectedModel as keyof ModelData);
+    const data = getModelData(selectedModel as keyof typeof modelData);
     if (data) {
       onDataTransfer(data);
       toast({

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { BatchDataOperations } from "@/components/shared/BatchDataOperations";
 import { FinancialMetrics } from "@/components/shared/FinancialMetrics";
 import { ReportGenerator } from "@/components/shared/ReportGenerator";
+import { RiskAssessment } from "@/components/shared/RiskAssessment";
 import {
   Calculator,
   LineChart,
@@ -71,6 +72,14 @@ export default function Index() {
     payables: 150000000,
     operatingCashFlow: 250000000,
     capex: 100000000,
+    currentRatio: 2.0,
+    quickRatio: 1.25,
+    debtToEquity: 0.8,
+    interestCoverage: 8.5,
+    operatingMargin: 0.20,
+    returnOnEquity: 0.15,
+    betaValue: 1.2,
+    volatility: 0.25
   };
 
   return (
@@ -85,6 +94,9 @@ export default function Index() {
 
       {/* Report Generator */}
       <ReportGenerator />
+
+      {/* Risk Assessment */}
+      <RiskAssessment financialData={sampleFinancialData} />
 
       {/* Batch Data Operations */}
       <BatchDataOperations />

@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { BatchDataOperations } from "@/components/shared/BatchDataOperations";
 import {
   Calculator,
   LineChart,
@@ -95,6 +96,9 @@ const Index = () => {
             Comprehensive tools for financial analysis, valuation, and strategic decision-making
           </p>
         </section>
+
+        {/* Batch Data Operations */}
+        <BatchDataOperations />
 
         {/* Quick Access Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

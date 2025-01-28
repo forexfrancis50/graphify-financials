@@ -2,13 +2,16 @@ import { Card } from "@/components/ui/card";
 import { ComparableAnalysis } from "@/components/ComparableAnalysis";
 import { BatchDataOperations } from "@/components/shared/BatchDataOperations";
 import { FinancialMetrics } from "@/components/shared/FinancialMetrics";
-import { Dashboard } from "@/components/dashboard/Dashboard";
+import { DataChart } from "@/components/shared/DataChart";
+import { DataTable } from "@/components/shared/DataTable";
+import { SensitivityAnalysis } from "@/components/SensitivityAnalysis";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { ChartBar, Calculator, FileSpreadsheet, TrendingUp } from "lucide-react";
 
 const sampleFinancialData = {
   revenue: 1000000000,
@@ -24,6 +27,21 @@ const sampleFinancialData = {
   operatingCashFlow: 250000000,
   capex: 100000000
 };
+
+// Sample data for sensitivity analysis
+const discountRates = [8, 10, 12, 14, 16];
+const growthRates = [1, 2, 3, 4, 5];
+const calculateEnterpriseValue = (discountRate: number, growthRate: number) => {
+  const baseValue = 1000000;
+  return Math.round(baseValue * (1 + growthRate/100) / (discountRate/100));
+};
+
+// Sample market data for the chart
+const marketData = Array.from({ length: 12 }, (_, i) => ({
+  month: `Month ${i + 1}`,
+  marketValue: Math.random() * 1000 + 500,
+  industryIndex: Math.random() * 800 + 400,
+}));
 
 export default function Index() {
   return (
@@ -94,6 +112,36 @@ export default function Index() {
         <section>
           <h2 className="text-2xl font-semibold mb-6">Professional Tools</h2>
           
+          {/* Market Analysis Chart */}
+          <div className="mb-8">
+            <DataChart
+              data={marketData}
+              type="line"
+              xKey="month"
+              yKey="marketValue"
+              title="Market Value Analysis"
+              gradient={{ from: "#22C55E", to: "#064E3B" }}
+            >
+              <DataChart
+                data={marketData}
+                type="line"
+                xKey="month"
+                yKey="industryIndex"
+                title="Industry Index"
+              />
+            </DataChart>
+          </div>
+
+          {/* Sensitivity Analysis */}
+          <div className="mb-8">
+            <SensitivityAnalysis
+              baseValue={1000000}
+              discountRates={discountRates}
+              growthRates={growthRates}
+              calculateEnterpriseValue={calculateEnterpriseValue}
+            />
+          </div>
+
           {/* Comparable Company Analysis */}
           <div className="mb-8">
             <ComparableAnalysis />
@@ -105,6 +153,27 @@ export default function Index() {
               <h3 className="text-xl font-semibold mb-4">Financial Metrics</h3>
               <FinancialMetrics data={sampleFinancialData} />
             </Card>
+          </div>
+
+          {/* Market Data Table */}
+          <div className="mb-8">
+            <DataTable
+              title="Market Performance Metrics"
+              data={marketData}
+              columns={[
+                { key: "month", header: "Period" },
+                { 
+                  key: "marketValue", 
+                  header: "Market Value",
+                  format: (value) => `$${value.toLocaleString()}`
+                },
+                {
+                  key: "industryIndex",
+                  header: "Industry Index",
+                  format: (value) => value.toFixed(2)
+                }
+              ]}
+            />
           </div>
 
           {/* Batch Data Operations */}

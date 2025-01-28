@@ -20,6 +20,13 @@ interface ModelData {
     leverage: number;
     exitMultiple: number;
   };
+  options?: {
+    stockPrice: number;
+    strikePrice: number;
+    timeToExpiry: number;
+    volatility: number;
+    riskFreeRate: number;
+  };
 }
 
 interface ModelDataContextType {

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { BatchDataOperations } from "@/components/shared/BatchDataOperations";
 import { FinancialMetrics } from "@/components/shared/FinancialMetrics";
+import { Dashboard } from "@/components/dashboard/Dashboard";
 import {
   Calculator,
   LineChart,
@@ -56,7 +57,6 @@ const modelCards = [
 export default function Index() {
   const navigate = useNavigate();
 
-  // Sample financial data for demonstration
   const sampleFinancialData = {
     revenue: 1000000000,
     ebitda: 200000000,
@@ -81,6 +81,9 @@ export default function Index() {
           Comprehensive tools for financial analysis and valuation
         </p>
       </section>
+
+      {/* Dashboard */}
+      <Dashboard />
 
       {/* Financial Metrics */}
       <FinancialMetrics data={sampleFinancialData} />

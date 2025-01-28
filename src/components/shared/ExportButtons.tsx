@@ -5,16 +5,15 @@ import { exportToPDF, exportToExcel } from "@/utils/exportUtils";
 interface ExportButtonsProps {
   title: string;
   data: any[];
-  columns: string[];
 }
 
-export function ExportButtons({ title, data, columns }: ExportButtonsProps) {
+export function ExportButtons({ title, data }: ExportButtonsProps) {
   return (
     <div className="flex gap-2">
       <Button
         variant="outline"
         size="sm"
-        onClick={() => exportToPDF(title, data, columns)}
+        onClick={() => exportToPDF(data, title)}
       >
         <FileDown className="mr-2 h-4 w-4" />
         Export PDF
@@ -22,7 +21,7 @@ export function ExportButtons({ title, data, columns }: ExportButtonsProps) {
       <Button
         variant="outline"
         size="sm"
-        onClick={() => exportToExcel(title, data)}
+        onClick={() => exportToExcel(data, title)}
       >
         <FileDown className="mr-2 h-4 w-4" />
         Export Excel

@@ -1,14 +1,25 @@
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import 'jspdf-autotable';
+
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: (options: any) => jsPDF;
+  }
+}
 
 export const exportToPDF = (data: any[], filename: string) => {
   const doc = new jsPDF();
   
-  doc.autoTable({
-    head: [Object.keys(data[0])],
-    body: data.map(Object.values),
-  });
+  if (data.length > 0) {
+    const headers = Object.keys(data[0]);
+    const rows = data.map(Object.values);
+    
+    doc.autoTable({
+      head: [headers],
+      body: rows,
+    });
+  }
   
   doc.save(`${filename}.pdf`);
 };

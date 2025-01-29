@@ -8,7 +8,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Calculator, FileSpreadsheet } from "lucide-react";
+import { Calculator, FileSpreadsheet, Briefcase, LineChart, Building2 } from "lucide-react";
+import { DataTable } from "@/components/shared/DataTable";
 
 const sampleFinancialData = {
   revenue: 1000000000,
@@ -25,13 +26,67 @@ const sampleFinancialData = {
   capex: 100000000
 };
 
+const leverageMetrics = [
+  {
+    metric: "Senior Debt / EBITDA",
+    value: "3.5x",
+    benchmark: "< 4.0x",
+    status: "Good"
+  },
+  {
+    metric: "Total Debt / EBITDA",
+    value: "4.8x",
+    benchmark: "< 5.0x",
+    status: "Good"
+  },
+  {
+    metric: "Interest Coverage Ratio",
+    value: "3.2x",
+    benchmark: "> 3.0x",
+    status: "Good"
+  },
+  {
+    metric: "Fixed Charge Coverage",
+    value: "2.8x",
+    benchmark: "> 2.5x",
+    status: "Good"
+  }
+];
+
+const workingCapitalMetrics = [
+  {
+    metric: "Days Sales Outstanding",
+    value: "45 days",
+    benchmark: "< 50 days",
+    status: "Good"
+  },
+  {
+    metric: "Days Inventory Outstanding",
+    value: "32 days",
+    benchmark: "< 35 days",
+    status: "Good"
+  },
+  {
+    metric: "Days Payable Outstanding",
+    value: "38 days",
+    benchmark: "> 35 days",
+    status: "Good"
+  },
+  {
+    metric: "Cash Conversion Cycle",
+    value: "39 days",
+    benchmark: "< 45 days",
+    status: "Good"
+  }
+];
+
 export default function Index() {
   return (
     <div className="container mx-auto p-6 space-y-8">
       <section className="text-center space-y-4">
         <h1 className="text-4xl font-bold">Financial Analysis Suite</h1>
         <p className="text-xl text-muted-foreground">
-          Professional tools for financial analysis and valuation
+          Professional tools for private equity analysis and valuation
         </p>
       </section>
 
@@ -69,6 +124,8 @@ export default function Index() {
               <ul className="list-disc pl-6 space-y-2">
                 <li><strong>Comparable Analysis:</strong> Compare key metrics across similar companies</li>
                 <li><strong>Financial Metrics:</strong> Calculate and analyze important financial ratios</li>
+                <li><strong>Working Capital Analysis:</strong> Track and optimize working capital metrics</li>
+                <li><strong>Leverage Analysis:</strong> Monitor debt levels and coverage ratios</li>
                 <li><strong>Batch Operations:</strong> Process multiple data sets simultaneously</li>
                 <li>All tools support data export to Excel and PDF formats</li>
               </ul>
@@ -93,6 +150,44 @@ export default function Index() {
         <section>
           <h2 className="text-2xl font-semibold mb-6">Professional Tools</h2>
           
+          {/* Leverage Analysis */}
+          <div className="mb-8">
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Building2 className="h-5 w-5" />
+                <h3 className="text-xl font-semibold">Leverage Analysis</h3>
+              </div>
+              <DataTable
+                data={leverageMetrics}
+                columns={[
+                  { key: "metric", header: "Metric" },
+                  { key: "value", header: "Value" },
+                  { key: "benchmark", header: "Benchmark" },
+                  { key: "status", header: "Status" }
+                ]}
+              />
+            </Card>
+          </div>
+
+          {/* Working Capital Analysis */}
+          <div className="mb-8">
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <LineChart className="h-5 w-5" />
+                <h3 className="text-xl font-semibold">Working Capital Analysis</h3>
+              </div>
+              <DataTable
+                data={workingCapitalMetrics}
+                columns={[
+                  { key: "metric", header: "Metric" },
+                  { key: "value", header: "Value" },
+                  { key: "benchmark", header: "Benchmark" },
+                  { key: "status", header: "Status" }
+                ]}
+              />
+            </Card>
+          </div>
+
           {/* Comparable Company Analysis */}
           <div className="mb-8">
             <ComparableAnalysis />

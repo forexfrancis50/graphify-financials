@@ -15,6 +15,8 @@ import {
 } from "recharts";
 import { SensitivityAnalysis } from "./SensitivityAnalysis";
 import { ComparableAnalysis } from "./ComparableAnalysis";
+import { DCFTemplates } from "./dcf/DCFTemplates";
+import { useToast } from "@/components/ui/use-toast";
 
 interface DCFInputs {
   initialRevenue: number;
@@ -29,6 +31,8 @@ interface DCFInputs {
 }
 
 export function DCFModel() {
+  const { toast } = useToast();
+  const [selectedTemplate, setSelectedTemplate] = useState("detailed");
   const [inputs, setInputs] = useState<DCFInputs>({
     initialRevenue: 1000000,
     growthRate: 10,
@@ -125,9 +129,247 @@ export function DCFModel() {
     return Math.round(totalValue);
   };
 
+  const handleTemplateChange = (template: string) => {
+    setSelectedTemplate(template);
+    toast({
+      title: "Template Updated",
+      description: "The DCF output format has been updated.",
+    });
+  };
+
+  const renderContent = () => {
+    const template = selectedTemplate;
+    const sections = {
+      assumptions: (
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="p-6 space-y-4">
+            <h2 className="text-xl font-semibold">Growth & Margins</h2>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="initialRevenue">Initial Revenue ($)</Label>
+                <Input
+                  id="initialRevenue"
+                  type="number"
+                  value={inputs.initialRevenue}
+                  onChange={(e) =>
+                    setInputs({ ...inputs, initialRevenue: Number(e.target.value) })
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="growthRate">Growth Rate (%)</Label>
+                <Input
+                  id="growthRate"
+                  type="number"
+                  value={inputs.growthRate}
+                  onChange={(e) =>
+                    setInputs({ ...inputs, growthRate: Number(e.target.value) })
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="operatingMargin">Operating Margin (%)</Label>
+                <Input
+                  id="operatingMargin"
+                  type="number"
+                  value={inputs.operatingMargin}
+                  onChange={(e) =>
+                    setInputs({ ...inputs, operatingMargin: Number(e.target.value) })
+                  }
+                />
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6 space-y-4">
+            <h2 className="text-xl font-semibold">Capital Structure & Valuation</h2>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="workingCapitalPercent">Working Capital (% of Revenue)</Label>
+                <Input
+                  id="workingCapitalPercent"
+                  type="number"
+                  value={inputs.workingCapitalPercent}
+                  onChange={(e) =>
+                    setInputs({ ...inputs, workingCapitalPercent: Number(e.target.value) })
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="capexPercent">CapEx (% of Revenue)</Label>
+                <Input
+                  id="capexPercent"
+                  type="number"
+                  value={inputs.capexPercent}
+                  onChange={(e) =>
+                    setInputs({ ...inputs, capexPercent: Number(e.target.value) })
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="terminalGrowthRate">Terminal Growth Rate (%)</Label>
+                <Input
+                  id="terminalGrowthRate"
+                  type="number"
+                  value={inputs.terminalGrowthRate}
+                  onChange={(e) =>
+                    setInputs({ ...inputs, terminalGrowthRate: Number(e.target.value) })
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="discountRate">Discount Rate (%)</Label>
+                <Input
+                  id="discountRate"
+                  type="number"
+                  value={inputs.discountRate}
+                  onChange={(e) =>
+                    setInputs({ ...inputs, discountRate: Number(e.target.value) })
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="taxRate">Tax Rate (%)</Label>
+                <Input
+                  id="taxRate"
+                  type="number"
+                  value={inputs.taxRate}
+                  onChange={(e) =>
+                    setInputs({ ...inputs, taxRate: Number(e.target.value) })
+                  }
+                />
+              </div>
+            </div>
+          </Card>
+        </div>
+      ),
+      projections: projections.length > 0 ? (
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Detailed Projections</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Year
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Revenue
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Operating Income
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Working Capital
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    CapEx
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Free Cash Flow
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Terminal Value
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Enterprise Value
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {projections.map((row) => (
+                  <tr key={row.year}>
+                    <td className="px-6 py-4 whitespace-nowrap">{2024 + row.year}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      ${row.revenue.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      ${row.operatingIncome.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      ${row.workingCapital.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      ${row.capex.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      ${row.freeCashFlow.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      ${row.terminalValue.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      ${row.enterpriseValue.toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      ) : null,
+      charts: (
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Revenue & Cash Flow Projections</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={[...inputs.historicalRevenue.map((revenue, index) => ({
+              year: 2019 + index,
+              revenue,
+              type: 'historical'
+            })), ...projections.map(p => ({
+              year: 2024 + p.year,
+              revenue: p.revenue,
+              freeCashFlow: p.freeCashFlow,
+              type: 'projection'
+            }))]}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="year" />
+              <YAxis />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="revenue"
+                stroke="#1E293B"
+                name="Revenue"
+              />
+              <Line
+                type="monotone"
+                dataKey="freeCashFlow"
+                stroke="#059669"
+                name="Free Cash Flow"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </Card>
+      ),
+      sensitivity: <SensitivityAnalysis
+        baseValue={projections[projections.length - 1]?.enterpriseValue || 0}
+        discountRates={[8, 10, 12, 14, 16]}
+        growthRates={[1, 2, 3, 4, 5]}
+        calculateEnterpriseValue={calculateEnterpriseValue}
+      />,
+      comps: <ComparableAnalysis />,
+    };
+
+    return sections;
+  };
+
   return (
     <div className="p-6 space-y-6 animate-fade-in">
-      <h1 className="text-3xl font-bold text-primary">DCF Model</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-primary">DCF Model</h1>
+        <DCFTemplates
+          selectedTemplate={selectedTemplate}
+          onTemplateChange={handleTemplateChange}
+        />
+      </div>
       
       <Tabs defaultValue="inputs" className="w-full">
         <TabsList>
@@ -139,114 +381,7 @@ export function DCFModel() {
         </TabsList>
 
         <TabsContent value="inputs">
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="p-6 space-y-4">
-              <h2 className="text-xl font-semibold">Growth & Margins</h2>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="initialRevenue">Initial Revenue ($)</Label>
-                  <Input
-                    id="initialRevenue"
-                    type="number"
-                    value={inputs.initialRevenue}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, initialRevenue: Number(e.target.value) })
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="growthRate">Growth Rate (%)</Label>
-                  <Input
-                    id="growthRate"
-                    type="number"
-                    value={inputs.growthRate}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, growthRate: Number(e.target.value) })
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="operatingMargin">Operating Margin (%)</Label>
-                  <Input
-                    id="operatingMargin"
-                    type="number"
-                    value={inputs.operatingMargin}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, operatingMargin: Number(e.target.value) })
-                    }
-                  />
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 space-y-4">
-              <h2 className="text-xl font-semibold">Capital Structure & Valuation</h2>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="workingCapitalPercent">Working Capital (% of Revenue)</Label>
-                  <Input
-                    id="workingCapitalPercent"
-                    type="number"
-                    value={inputs.workingCapitalPercent}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, workingCapitalPercent: Number(e.target.value) })
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="capexPercent">CapEx (% of Revenue)</Label>
-                  <Input
-                    id="capexPercent"
-                    type="number"
-                    value={inputs.capexPercent}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, capexPercent: Number(e.target.value) })
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="terminalGrowthRate">Terminal Growth Rate (%)</Label>
-                  <Input
-                    id="terminalGrowthRate"
-                    type="number"
-                    value={inputs.terminalGrowthRate}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, terminalGrowthRate: Number(e.target.value) })
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="discountRate">Discount Rate (%)</Label>
-                  <Input
-                    id="discountRate"
-                    type="number"
-                    value={inputs.discountRate}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, discountRate: Number(e.target.value) })
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="taxRate">Tax Rate (%)</Label>
-                  <Input
-                    id="taxRate"
-                    type="number"
-                    value={inputs.taxRate}
-                    onChange={(e) =>
-                      setInputs({ ...inputs, taxRate: Number(e.target.value) })
-                    }
-                  />
-                </div>
-              </div>
-            </Card>
-          </div>
-
+          {renderContent().assumptions}
           <Button onClick={calculateDCF} className="w-full mt-6">
             Calculate DCF
           </Button>
@@ -276,124 +411,15 @@ export function DCFModel() {
         </TabsContent>
 
         <TabsContent value="results">
-          {projections.length > 0 ? (
-            <div className="space-y-6">
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Revenue & Cash Flow Projections</h2>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={[...inputs.historicalRevenue.map((revenue, index) => ({
-                    year: 2019 + index,
-                    revenue,
-                    type: 'historical'
-                  })), ...projections.map(p => ({
-                    year: 2024 + p.year,
-                    revenue: p.revenue,
-                    freeCashFlow: p.freeCashFlow,
-                    type: 'projection'
-                  }))]}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line
-                      type="monotone"
-                      dataKey="revenue"
-                      stroke="#1E293B"
-                      name="Revenue"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="freeCashFlow"
-                      stroke="#059669"
-                      name="Free Cash Flow"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </Card>
-
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Detailed Projections</h2>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead>
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Year
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Revenue
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Operating Income
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Working Capital
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          CapEx
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Free Cash Flow
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Terminal Value
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Enterprise Value
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {projections.map((row) => (
-                        <tr key={row.year}>
-                          <td className="px-6 py-4 whitespace-nowrap">{2024 + row.year}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            ${row.revenue.toLocaleString()}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            ${row.operatingIncome.toLocaleString()}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            ${row.workingCapital.toLocaleString()}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            ${row.capex.toLocaleString()}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            ${row.freeCashFlow.toLocaleString()}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            ${row.terminalValue.toLocaleString()}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            ${row.enterpriseValue.toLocaleString()}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Card>
-            </div>
-          ) : (
-            <div className="text-center p-12 text-gray-500">
-              Enter inputs and calculate to see projections
-            </div>
-          )}
+          {renderContent().projections}
         </TabsContent>
 
         <TabsContent value="sensitivity">
-          <SensitivityAnalysis
-            baseValue={projections[projections.length - 1]?.enterpriseValue || 0}
-            discountRates={[8, 10, 12, 14, 16]}
-            growthRates={[1, 2, 3, 4, 5]}
-            calculateEnterpriseValue={calculateEnterpriseValue}
-          />
+          {renderContent().sensitivity}
         </TabsContent>
 
         <TabsContent value="comps">
-          <ComparableAnalysis />
+          {renderContent().comps}
         </TabsContent>
       </Tabs>
     </div>

@@ -1,212 +1,115 @@
-import { ComparableAnalysis } from "@/components/ComparableAnalysis";
-import { BatchDataOperations } from "@/components/shared/BatchDataOperations";
-import { FinancialMetrics } from "@/components/shared/FinancialMetrics";
-import { Card } from "@/components/ui/card";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Calculator, FileSpreadsheet, Briefcase, LineChart, Building2 } from "lucide-react";
-import { DataTable } from "@/components/shared/DataTable";
-
-const sampleFinancialData = {
-  revenue: 1000000000,
-  ebitda: 20000000,
-  netIncome: 10000000,
-  totalAssets: 2000000000,
-  totalLiabilities: 1000000000,
-  currentAssets: 800000000,
-  currentLiabilities: 400000000,
-  inventory: 300000000,
-  receivables: 200000000,
-  payables: 150000000,
-  operatingCashFlow: 250000000,
-  capex: 100000000
-};
-
-const leverageMetrics = [
-  {
-    metric: "Senior Debt / EBITDA",
-    value: "3.5x",
-    benchmark: "< 4.0x",
-    status: "Good"
-  },
-  {
-    metric: "Total Debt / EBITDA",
-    value: "4.8x",
-    benchmark: "< 5.0x",
-    status: "Good"
-  },
-  {
-    metric: "Interest Coverage Ratio",
-    value: "3.2x",
-    benchmark: "> 3.0x",
-    status: "Good"
-  },
-  {
-    metric: "Fixed Charge Coverage",
-    value: "2.8x",
-    benchmark: "> 2.5x",
-    status: "Good"
-  }
-];
-
-const workingCapitalMetrics = [
-  {
-    metric: "Days Sales Outstanding",
-    value: "45 days",
-    benchmark: "< 50 days",
-    status: "Good"
-  },
-  {
-    metric: "Days Inventory Outstanding",
-    value: "32 days",
-    benchmark: "< 35 days",
-    status: "Good"
-  },
-  {
-    metric: "Days Payable Outstanding",
-    value: "38 days",
-    benchmark: "> 35 days",
-    status: "Good"
-  },
-  {
-    metric: "Cash Conversion Cycle",
-    value: "39 days",
-    benchmark: "< 45 days",
-    status: "Good"
-  }
-];
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { ArrowRight, BarChart2, Brain, Calculator, LineChart, PieChart, Workflow } from "lucide-react";
 
 export default function Index() {
+  const navigate = useNavigate();
+
+  const features = [
+    {
+      title: "DCF Modeling",
+      description: "Build comprehensive discounted cash flow models with customizable templates and assumptions",
+      icon: <Calculator className="w-6 h-6" />,
+      route: "/dcf"
+    },
+    {
+      title: "LBO Analysis",
+      description: "Create leveraged buyout models with multiple scenarios and debt structures",
+      icon: <LineChart className="w-6 h-6" />,
+      route: "/lbo"
+    },
+    {
+      title: "M&A Modeling",
+      description: "Analyze mergers and acquisitions with detailed accretion/dilution analysis",
+      icon: <PieChart className="w-6 h-6" />,
+      route: "/ma"
+    },
+    {
+      title: "Advanced Analytics",
+      description: "Leverage AI-powered insights for deeper financial analysis and decision making",
+      icon: <Brain className="w-6 h-6" />,
+      route: "/options"
+    }
+  ];
+
   return (
-    <div className="container mx-auto p-6 space-y-8">
-      <section className="text-center space-y-4">
-        <h1 className="text-4xl font-bold">Financial Analysis Suite</h1>
-        <p className="text-xl text-muted-foreground">
-          Professional tools for private equity analysis and valuation
-        </p>
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-5xl mx-auto text-center space-y-8">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight animate-fade-in">
+            Professional Financial Modeling Suite
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in">
+            Empower your private equity analysis with advanced modeling tools, AI-driven insights,
+            and professional-grade templates
+          </p>
+          <div className="flex gap-4 justify-center animate-fade-in">
+            <Button
+              size="lg"
+              onClick={() => navigate("/dcf")}
+              className="gap-2"
+            >
+              Start Modeling <ArrowRight className="w-4 h-4" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => navigate("/ma")}
+              className="gap-2"
+            >
+              Explore M&A Tools <BarChart2 className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
       </section>
 
-      {/* User Guide Section */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Getting Started Guide</h2>
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="navigation">
-            <AccordionTrigger>Navigation Guide</AccordionTrigger>
-            <AccordionContent>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Use the sidebar on the left to navigate between different financial models</li>
-                <li>Click on any model name to access its specific tools and features</li>
-                <li>You can always return to this dashboard by clicking "Dashboard" in the sidebar</li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="models">
-            <AccordionTrigger>Available Models</AccordionTrigger>
-            <AccordionContent>
-              <ul className="list-disc pl-6 space-y-2">
-                <li><strong>DCF Model:</strong> Discounted Cash Flow analysis for company valuation</li>
-                <li><strong>LBO Model:</strong> Leveraged Buyout analysis for acquisition scenarios</li>
-                <li><strong>M&A Model:</strong> Merger and Acquisition analysis tools</li>
-                <li><strong>Restructuring:</strong> Tools for company restructuring analysis</li>
-                <li><strong>DDM Model:</strong> Dividend Discount Model for equity valuation</li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="tools">
-            <AccordionTrigger>Using Professional Tools</AccordionTrigger>
-            <AccordionContent>
-              <ul className="list-disc pl-6 space-y-2">
-                <li><strong>Comparable Analysis:</strong> Compare key metrics across similar companies</li>
-                <li><strong>Financial Metrics:</strong> Calculate and analyze important financial ratios</li>
-                <li><strong>Working Capital Analysis:</strong> Track and optimize working capital metrics</li>
-                <li><strong>Leverage Analysis:</strong> Monitor debt levels and coverage ratios</li>
-                <li><strong>Batch Operations:</strong> Process multiple data sets simultaneously</li>
-                <li>All tools support data export to Excel and PDF formats</li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="tips">
-            <AccordionTrigger>Pro Tips</AccordionTrigger>
-            <AccordionContent>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Use the export buttons to save your analysis in Excel or PDF format</li>
-                <li>Input data is automatically saved as you work</li>
-                <li>Compare results across different models for comprehensive analysis</li>
-                <li>Check the metrics dashboard for quick insights into your models</li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+      {/* Features Grid */}
+      <section className="py-16 px-6 bg-accent/10">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Comprehensive Financial Tools
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <div
+                key={feature.title}
+                className="p-6 rounded-lg border bg-card hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => navigate(feature.route)}
+              >
+                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      <div className="grid grid-cols-1 gap-8">
-        <section>
-          <h2 className="text-2xl font-semibold mb-6">Professional Tools</h2>
-          
-          {/* Leverage Analysis */}
-          <div className="mb-8">
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Building2 className="h-5 w-5" />
-                <h3 className="text-xl font-semibold">Leverage Analysis</h3>
-              </div>
-              <DataTable
-                data={leverageMetrics}
-                columns={[
-                  { key: "metric", header: "Metric" },
-                  { key: "value", header: "Value" },
-                  { key: "benchmark", header: "Benchmark" },
-                  { key: "status", header: "Status" }
-                ]}
-              />
-            </Card>
+      {/* Workflow Section */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          <div className="h-16 w-16 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-8">
+            <Workflow className="w-8 h-8 text-secondary" />
           </div>
-
-          {/* Working Capital Analysis */}
-          <div className="mb-8">
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <LineChart className="h-5 w-5" />
-                <h3 className="text-xl font-semibold">Working Capital Analysis</h3>
-              </div>
-              <DataTable
-                data={workingCapitalMetrics}
-                columns={[
-                  { key: "metric", header: "Metric" },
-                  { key: "value", header: "Value" },
-                  { key: "benchmark", header: "Benchmark" },
-                  { key: "status", header: "Status" }
-                ]}
-              />
-            </Card>
-          </div>
-
-          {/* Comparable Company Analysis */}
-          <div className="mb-8">
-            <ComparableAnalysis />
-          </div>
-
-          {/* Financial Metrics */}
-          <div className="mb-8">
-            <Card className="p-6">
-              <h3 className="text-xl font-semibold mb-4">Financial Metrics</h3>
-              <FinancialMetrics data={sampleFinancialData} />
-            </Card>
-          </div>
-
-          {/* Batch Data Operations */}
-          <div>
-            <BatchDataOperations />
-          </div>
-        </section>
-      </div>
+          <h2 className="text-3xl font-bold">Streamlined Workflow</h2>
+          <p className="text-xl text-muted-foreground">
+            Our integrated suite of financial tools helps you move seamlessly from analysis to
+            presentation, with professional templates and customizable outputs for every stage of
+            your investment process.
+          </p>
+          <Button
+            size="lg"
+            variant="secondary"
+            onClick={() => navigate("/dcf")}
+            className="gap-2"
+          >
+            View All Tools <ArrowRight className="w-4 h-4" />
+          </Button>
+        </div>
+      </section>
     </div>
   );
 }

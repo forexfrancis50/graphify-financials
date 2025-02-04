@@ -10,6 +10,7 @@ import {
   PieChart,
   Workflow,
   Lightbulb,
+  TrendingUp
 } from "lucide-react";
 import {
   Accordion,
@@ -45,6 +46,12 @@ export default function Index() {
       description: "Leverage AI-powered insights for deeper financial analysis and decision making",
       icon: <Brain className="w-6 h-6" />,
       route: "/options"
+    },
+    {
+      title: "IRR Calculator",
+      description: "Calculate Internal Rate of Return for investment projects and private equity deals",
+      icon: <TrendingUp className="w-6 h-6" />,
+      route: "/irr"
     }
   ];
 
@@ -134,7 +141,7 @@ export default function Index() {
           <h2 className="text-3xl font-bold text-center mb-12">
             Comprehensive Financial Tools
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
             {features.map((feature, index) => (
               <div
                 key={feature.title}

@@ -1,6 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, BarChart2, Brain, Calculator, LineChart, PieChart, Workflow } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import {
+  ArrowRight,
+  BarChart2,
+  Brain,
+  Calculator,
+  LineChart,
+  PieChart,
+  Workflow,
+  Lightbulb,
+} from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -29,6 +45,54 @@ export default function Index() {
       description: "Leverage AI-powered insights for deeper financial analysis and decision making",
       icon: <Brain className="w-6 h-6" />,
       route: "/options"
+    }
+  ];
+
+  const modelingTips = [
+    {
+      industry: "Technology",
+      tips: [
+        "Focus on revenue growth rates and customer acquisition costs",
+        "Consider R&D expenses as a percentage of revenue",
+        "Analyze subscription-based revenue models separately",
+        "Account for high initial capex but lower maintenance capex"
+      ]
+    },
+    {
+      industry: "Manufacturing",
+      tips: [
+        "Pay attention to working capital requirements",
+        "Consider cyclical nature of capital expenditures",
+        "Factor in commodity price fluctuations",
+        "Analyze capacity utilization rates"
+      ]
+    },
+    {
+      industry: "Healthcare",
+      tips: [
+        "Account for regulatory compliance costs",
+        "Consider reimbursement rates and payment cycles",
+        "Analyze R&D pipeline and success rates",
+        "Factor in patent expiration impacts"
+      ]
+    },
+    {
+      industry: "Retail",
+      tips: [
+        "Focus on same-store sales growth",
+        "Consider seasonal working capital needs",
+        "Analyze inventory turnover ratios",
+        "Factor in e-commerce transition costs"
+      ]
+    },
+    {
+      industry: "Financial Services",
+      tips: [
+        "Focus on net interest margins",
+        "Consider regulatory capital requirements",
+        "Analyze loan loss provisions",
+        "Factor in fee-based income streams"
+      ]
     }
   ];
 
@@ -85,6 +149,40 @@ export default function Index() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Industry Modeling Tips */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="h-16 w-16 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-6">
+              <Lightbulb className="w-8 h-8 text-secondary" />
+            </div>
+            <h2 className="text-3xl font-bold mb-4">Industry-Specific Modeling Tips</h2>
+            <p className="text-xl text-muted-foreground">
+              Expert guidance for modeling different industries and company types
+            </p>
+          </div>
+          
+          <Accordion type="single" collapsible className="w-full">
+            {modelingTips.map((industry, index) => (
+              <AccordionItem key={industry.industry} value={`item-${index}`}>
+                <AccordionTrigger className="text-lg font-semibold">
+                  {industry.industry}
+                </AccordionTrigger>
+                <AccordionContent>
+                  <ul className="list-disc pl-6 space-y-2">
+                    {industry.tips.map((tip, tipIndex) => (
+                      <li key={tipIndex} className="text-muted-foreground">
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </section>
 

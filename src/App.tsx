@@ -22,6 +22,7 @@ import NPV from "./pages/NPV";
 import BreakEven from "./pages/BreakEven";
 import Loan from "./pages/Loan";
 import ROI from "./pages/ROI";
+import Vasicek from "./pages/Vasicek";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,7 @@ const App = () => (
                     <Route path="/break-even" element={<BreakEven />} />
                     <Route path="/loan" element={<Loan />} />
                     <Route path="/roi" element={<ROI />} />
+                    <Route path="/vasicek" element={<Vasicek />} />
                   </Routes>
                 </main>
               </div>

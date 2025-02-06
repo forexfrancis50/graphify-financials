@@ -17,7 +17,8 @@ import {
   DollarSign,
   ChartPie,
   CircleDollarSign,
-  Wallet
+  Wallet,
+  Activity
 } from "lucide-react";
 
 export function AppSidebar() {
@@ -41,6 +42,7 @@ export function AppSidebar() {
     { name: "Break-Even Analysis", path: "/break-even", icon: <ChartPie className="h-4 w-4" /> },
     { name: "Loan Calculator", path: "/loan", icon: <CircleDollarSign className="h-4 w-4" /> },
     { name: "ROI Calculator", path: "/roi", icon: <Wallet className="h-4 w-4" /> },
+    { name: "Vasicek Model", path: "/vasicek", icon: <Activity className="h-4 w-4" /> },
   ];
 
   return (

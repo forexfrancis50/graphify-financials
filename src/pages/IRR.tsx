@@ -4,12 +4,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function IRR() {
+  const { toast } = useToast();
   const [cashFlows, setCashFlows] = useState<number[]>([-1000, 200, 300, 400, 500]);
   const [result, setResult] = useState<number | null>(null);
 
   const calculateIRR = () => {
+    if (cashFlows.length < 2) {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter at least two cash flows (initial investment and one return)",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const guess = 0.1;
     const tolerance = 0.00001;
     let maxIterations = 1000;
@@ -21,28 +32,79 @@ export default function IRR() {
     let rate = guess;
     let iteration = 0;
     
-    while (iteration < maxIterations) {
-      const currentNPV = npv(rate);
-      if (Math.abs(currentNPV) < tolerance) {
-        setResult(rate * 100);
-        return;
+    try {
+      while (iteration < maxIterations) {
+        const currentNPV = npv(rate);
+        
+        if (Math.abs(currentNPV) < tolerance) {
+          setResult(rate * 100);
+          toast({
+            title: "Calculation Complete",
+            description: `IRR calculated: ${(rate * 100).toFixed(2)}%`,
+          });
+          return;
+        }
+        
+        const derivativeNPV = cashFlows.reduce((acc, cf, i) => 
+          acc - (i * cf) / Math.pow(1 + rate, i + 1), 0);
+        
+        if (Math.abs(derivativeNPV) < tolerance) {
+          toast({
+            title: "Calculation Error",
+            description: "Could not converge to a solution. Try different cash flows.",
+            variant: "destructive",
+          });
+          setResult(null);
+          return;
+        }
+        
+        const nextRate = rate - currentNPV / derivativeNPV;
+        
+        if (Math.abs(nextRate - rate) < tolerance) {
+          setResult(nextRate * 100);
+          toast({
+            title: "Calculation Complete",
+            description: `IRR calculated: ${(nextRate * 100).toFixed(2)}%`,
+          });
+          return;
+        }
+        
+        rate = nextRate;
+        iteration++;
       }
       
-      const derivativeNPV = cashFlows.reduce((acc, cf, i) => 
-        acc - (i * cf) / Math.pow(1 + rate, i + 1), 0);
-      
-      const nextRate = rate - currentNPV / derivativeNPV;
-      
-      if (Math.abs(nextRate - rate) < tolerance) {
-        setResult(nextRate * 100);
-        return;
-      }
-      
-      rate = nextRate;
-      iteration++;
+      toast({
+        title: "Calculation Error",
+        description: "Maximum iterations reached. Try different cash flows.",
+        variant: "destructive",
+      });
+      setResult(null);
+    } catch (error) {
+      toast({
+        title: "Calculation Error",
+        description: "An error occurred during calculation. Please check your inputs.",
+        variant: "destructive",
+      });
+      setResult(null);
+    }
+  };
+
+  const handleCashFlowInput = (input: string) => {
+    const values = input.split(",").map(v => {
+      const parsed = parseFloat(v.trim());
+      return isNaN(parsed) ? 0 : parsed;
+    });
+    
+    if (values.some(v => !isFinite(v))) {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter valid numbers only",
+        variant: "destructive",
+      });
+      return;
     }
     
-    setResult(null);
+    setCashFlows(values);
   };
 
   return (
@@ -58,12 +120,7 @@ export default function IRR() {
             <Label>Cash Flows (comma-separated)</Label>
             <Input
               value={cashFlows.join(", ")}
-              onChange={(e) => {
-                const values = e.target.value.split(",").map(v => parseFloat(v.trim()));
-                if (values.every(v => !isNaN(v))) {
-                  setCashFlows(values);
-                }
-              }}
+              onChange={(e) => handleCashFlowInput(e.target.value)}
               placeholder="Enter cash flows (e.g., -1000, 200, 300, 400, 500)"
               className="font-mono"
             />

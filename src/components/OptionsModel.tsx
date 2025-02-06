@@ -190,7 +190,6 @@ export function OptionsModel() {
           <ExportButtons
             title="Options Analysis"
             data={getExportData()}
-            columns={["metric", "value"]}
           />
         )}
       </div>

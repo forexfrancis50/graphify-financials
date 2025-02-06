@@ -18,6 +18,10 @@ import IPO from "./pages/IPO";
 import CapitalBudgeting from "./pages/CapitalBudgeting";
 import Options from "./pages/Options";
 import IRR from "./pages/IRR";
+import NPV from "./pages/NPV";
+import BreakEven from "./pages/BreakEven";
+import Loan from "./pages/Loan";
+import ROI from "./pages/ROI";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +49,10 @@ const App = () => (
                     <Route path="/capital-budgeting" element={<CapitalBudgeting />} />
                     <Route path="/options" element={<Options />} />
                     <Route path="/irr" element={<IRR />} />
+                    <Route path="/npv" element={<NPV />} />
+                    <Route path="/break-even" element={<BreakEven />} />
+                    <Route path="/loan" element={<Loan />} />
+                    <Route path="/roi" element={<ROI />} />
                   </Routes>
                 </main>
               </div>

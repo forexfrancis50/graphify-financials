@@ -13,7 +13,11 @@ import {
   ArrowUpDown,
   LineChart,
   BarChart,
-  Percent
+  Percent,
+  DollarSign,
+  ChartPie,
+  CircleDollarSign,
+  Wallet
 } from "lucide-react";
 
 export function AppSidebar() {
@@ -33,6 +37,10 @@ export function AppSidebar() {
     { name: "Capital Budgeting", path: "/capital-budgeting", icon: <LineChart className="h-4 w-4" /> },
     { name: "Options", path: "/options", icon: <BarChart className="h-4 w-4" /> },
     { name: "IRR Calculator", path: "/irr", icon: <Percent className="h-4 w-4" /> },
+    { name: "NPV Calculator", path: "/npv", icon: <DollarSign className="h-4 w-4" /> },
+    { name: "Break-Even Analysis", path: "/break-even", icon: <ChartPie className="h-4 w-4" /> },
+    { name: "Loan Calculator", path: "/loan", icon: <CircleDollarSign className="h-4 w-4" /> },
+    { name: "ROI Calculator", path: "/roi", icon: <Wallet className="h-4 w-4" /> },
   ];
 
   return (

@@ -17,6 +17,7 @@ import AccretionDilution from "./pages/AccretionDilution";
 import IPO from "./pages/IPO";
 import CapitalBudgeting from "./pages/CapitalBudgeting";
 import Options from "./pages/Options";
+import IRR from "./pages/IRR";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
                     <Route path="/ipo" element={<IPO />} />
                     <Route path="/capital-budgeting" element={<CapitalBudgeting />} />
                     <Route path="/options" element={<Options />} />
+                    <Route path="/irr" element={<IRR />} />
                   </Routes>
                 </main>
               </div>

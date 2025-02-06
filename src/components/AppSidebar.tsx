@@ -13,6 +13,7 @@ import {
   ArrowUpDown,
   LineChart,
   BarChart,
+  Percent
 } from "lucide-react";
 
 export function AppSidebar() {
@@ -31,6 +32,7 @@ export function AppSidebar() {
     { name: "IPO Model", path: "/ipo", icon: <ArrowUpDown className="h-4 w-4" /> },
     { name: "Capital Budgeting", path: "/capital-budgeting", icon: <LineChart className="h-4 w-4" /> },
     { name: "Options", path: "/options", icon: <BarChart className="h-4 w-4" /> },
+    { name: "IRR Calculator", path: "/irr", icon: <Percent className="h-4 w-4" /> },
   ];
 
   return (

@@ -24,7 +24,10 @@ import {
   CandlestickChart,
   Timer,
   BarChart2,
-  PieChart
+  PieChart,
+  AlertTriangle,
+  TrendingUpIcon,
+  BarChart4
 } from "lucide-react";
 
 export function AppSidebar() {
@@ -54,6 +57,9 @@ export function AppSidebar() {
     { name: "Hull-White Model", path: "/hull-white", icon: <Timer className="h-4 w-4" /> },
     { name: "Monte Carlo Simulation", path: "/monte-carlo", icon: <BarChart2 className="h-4 w-4" /> },
     { name: "Financial Ratios", path: "/financial-ratios", icon: <PieChart className="h-4 w-4" /> },
+    { name: "Value at Risk (VaR)", path: "/var", icon: <AlertTriangle className="h-4 w-4" /> },
+    { name: "Beta Calculator", path: "/beta", icon: <TrendingUpIcon className="h-4 w-4" /> },
+    { name: "Sharpe Ratio", path: "/sharpe-ratio", icon: <BarChart4 className="h-4 w-4" /> },
   ];
 
   return (

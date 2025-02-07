@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -23,6 +24,8 @@ import BreakEven from "./pages/BreakEven";
 import Loan from "./pages/Loan";
 import ROI from "./pages/ROI";
 import Vasicek from "./pages/Vasicek";
+import CAPM from "./pages/CAPM";
+import BlackScholes from "./pages/BlackScholes";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +58,8 @@ const App = () => (
                     <Route path="/loan" element={<Loan />} />
                     <Route path="/roi" element={<ROI />} />
                     <Route path="/vasicek" element={<Vasicek />} />
+                    <Route path="/capm" element={<CAPM />} />
+                    <Route path="/black-scholes" element={<BlackScholes />} />
                   </Routes>
                 </main>
               </div>

@@ -1,3 +1,4 @@
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
@@ -18,7 +19,9 @@ import {
   ChartPie,
   CircleDollarSign,
   Wallet,
-  Activity
+  Activity,
+  TrendingDown,
+  CandlestickChart
 } from "lucide-react";
 
 export function AppSidebar() {
@@ -43,6 +46,8 @@ export function AppSidebar() {
     { name: "Loan Calculator", path: "/loan", icon: <CircleDollarSign className="h-4 w-4" /> },
     { name: "ROI Calculator", path: "/roi", icon: <Wallet className="h-4 w-4" /> },
     { name: "Vasicek Model", path: "/vasicek", icon: <Activity className="h-4 w-4" /> },
+    { name: "CAPM Model", path: "/capm", icon: <TrendingDown className="h-4 w-4" /> },
+    { name: "Black-Scholes Model", path: "/black-scholes", icon: <CandlestickChart className="h-4 w-4" /> },
   ];
 
   return (

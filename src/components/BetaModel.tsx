@@ -13,45 +13,59 @@ export function BetaModel() {
   const [marketReturns, setMarketReturns] = useState("");
   const [beta, setBeta] = useState(0);
   const [rSquared, setRSquared] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
-  const calculateBeta = () => {
-    const stockData = stockReturns.split("\n").map(Number).filter(n => !isNaN(n));
-    const marketData = marketReturns.split("\n").map(Number).filter(n => !isNaN(n));
-    
-    if (stockData.length !== marketData.length) return;
-
-    const n = stockData.length;
-    const marketMean = marketData.reduce((a, b) => a + b, 0) / n;
-    const stockMean = stockData.reduce((a, b) => a + b, 0) / n;
-
-    let covariance = 0;
-    let marketVariance = 0;
-
-    for (let i = 0; i < n; i++) {
-      covariance += (marketData[i] - marketMean) * (stockData[i] - stockMean);
-      marketVariance += Math.pow(marketData[i] - marketMean, 2);
+  const validateData = (stockData: number[], marketData: number[]) => {
+    if (stockData.length === 0 || marketData.length === 0) {
+      throw new Error("Please enter both stock and market returns");
     }
-
-    const betaValue = covariance / marketVariance;
-    setBeta(betaValue);
-
-    // Calculate R-squared
-    let totalSS = 0;
-    let residualSS = 0;
-    
-    for (let i = 0; i < n; i++) {
-      const predicted = stockMean + betaValue * (marketData[i] - marketMean);
-      totalSS += Math.pow(stockData[i] - stockMean, 2);
-      residualSS += Math.pow(stockData[i] - predicted, 2);
+    if (stockData.length !== marketData.length) {
+      throw new Error("Stock and market returns must have the same number of observations");
     }
-
-    setRSquared(1 - (residualSS / totalSS));
-
-    return { beta: betaValue, rSquared: 1 - (residualSS / totalSS) };
+    if (stockData.length < 2) {
+      throw new Error("Need at least 2 observations to calculate beta");
+    }
   };
 
-  const handleCalculate = () => {
-    calculateBeta();
+  const calculateBeta = () => {
+    try {
+      setError(null);
+      const stockData = stockReturns.split("\n").map(Number).filter(n => !isNaN(n));
+      const marketData = marketReturns.split("\n").map(Number).filter(n => !isNaN(n));
+      
+      validateData(stockData, marketData);
+
+      const n = stockData.length;
+      const marketMean = marketData.reduce((a, b) => a + b, 0) / n;
+      const stockMean = stockData.reduce((a, b) => a + b, 0) / n;
+
+      let covariance = 0;
+      let marketVariance = 0;
+
+      for (let i = 0; i < n; i++) {
+        covariance += (marketData[i] - marketMean) * (stockData[i] - stockMean);
+        marketVariance += Math.pow(marketData[i] - marketMean, 2);
+      }
+
+      const betaValue = covariance / marketVariance;
+      setBeta(betaValue);
+
+      // Calculate R-squared
+      let totalSS = 0;
+      let residualSS = 0;
+      
+      for (let i = 0; i < n; i++) {
+        const predicted = stockMean + betaValue * (marketData[i] - marketMean);
+        totalSS += Math.pow(stockData[i] - stockMean, 2);
+        residualSS += Math.pow(stockData[i] - predicted, 2);
+      }
+
+      setRSquared(1 - (residualSS / totalSS));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error calculating beta");
+      setBeta(0);
+      setRSquared(0);
+    }
   };
 
   const chartData = stockReturns.split("\n").map((ret, index) => ({
@@ -71,28 +85,40 @@ export function BetaModel() {
               <Label htmlFor="stock-returns">Stock Returns (one per line)</Label>
               <textarea
                 id="stock-returns"
-                className="w-full min-h-[200px] p-2 border rounded"
+                className="w-full min-h-[200px] p-2 border rounded mt-1"
                 value={stockReturns}
                 onChange={(e) => setStockReturns(e.target.value)}
-                placeholder="Enter stock returns, one per line&#10;Example:&#10;0.02&#10;-0.01&#10;0.03"
+                placeholder="Enter decimal values, one per line&#10;Example:&#10;0.02&#10;-0.01&#10;0.03"
               />
+              <p className="text-sm text-muted-foreground mt-1">
+                Enter returns as decimals (e.g., 0.05 for 5%)
+              </p>
             </div>
             
             <div>
               <Label htmlFor="market-returns">Market Returns (one per line)</Label>
               <textarea
                 id="market-returns"
-                className="w-full min-h-[200px] p-2 border rounded"
+                className="w-full min-h-[200px] p-2 border rounded mt-1"
                 value={marketReturns}
                 onChange={(e) => setMarketReturns(e.target.value)}
-                placeholder="Enter market returns, one per line&#10;Example:&#10;0.01&#10;-0.02&#10;0.02"
+                placeholder="Enter decimal values, one per line&#10;Example:&#10;0.01&#10;-0.02&#10;0.02"
               />
+              <p className="text-sm text-muted-foreground mt-1">
+                Enter returns as decimals (e.g., 0.05 for 5%)
+              </p>
             </div>
 
-            <Button onClick={handleCalculate}>Calculate Beta</Button>
+            <Button onClick={calculateBeta}>Calculate Beta</Button>
           </div>
 
           <div className="space-y-6">
+            {error && (
+              <div className="bg-destructive/15 text-destructive p-3 rounded-md">
+                {error}
+              </div>
+            )}
+
             <MetricsCard
               title="Beta"
               value={beta.toFixed(2)}
@@ -106,6 +132,16 @@ export function BetaModel() {
               description="Goodness of fit"
               icon={TrendingUp}
             />
+
+            <div className="p-4 bg-muted rounded-lg">
+              <h3 className="font-medium mb-2">How to use this calculator:</h3>
+              <ol className="list-decimal list-inside space-y-1 text-sm">
+                <li>Enter historical stock returns (one per line)</li>
+                <li>Enter corresponding market returns</li>
+                <li>Make sure both lists have the same number of observations</li>
+                <li>Click "Calculate Beta" to see results</li>
+              </ol>
+            </div>
           </div>
         </div>
       </Card>

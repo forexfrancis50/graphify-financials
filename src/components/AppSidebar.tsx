@@ -21,7 +21,10 @@ import {
   Wallet,
   Activity,
   TrendingDown,
-  CandlestickChart
+  CandlestickChart,
+  Timer,
+  BarChart2,
+  PieChart
 } from "lucide-react";
 
 export function AppSidebar() {
@@ -48,6 +51,9 @@ export function AppSidebar() {
     { name: "Vasicek Model", path: "/vasicek", icon: <Activity className="h-4 w-4" /> },
     { name: "CAPM Model", path: "/capm", icon: <TrendingDown className="h-4 w-4" /> },
     { name: "Black-Scholes Model", path: "/black-scholes", icon: <CandlestickChart className="h-4 w-4" /> },
+    { name: "Hull-White Model", path: "/hull-white", icon: <Timer className="h-4 w-4" /> },
+    { name: "Monte Carlo Simulation", path: "/monte-carlo", icon: <BarChart2 className="h-4 w-4" /> },
+    { name: "Financial Ratios", path: "/financial-ratios", icon: <PieChart className="h-4 w-4" /> },
   ];
 
   return (

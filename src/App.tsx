@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -26,6 +25,9 @@ import ROI from "./pages/ROI";
 import Vasicek from "./pages/Vasicek";
 import CAPM from "./pages/CAPM";
 import BlackScholes from "./pages/BlackScholes";
+import HullWhite from "./pages/HullWhite";
+import MonteCarlo from "./pages/MonteCarlo";
+import FinancialRatios from "./pages/FinancialRatios";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +62,9 @@ const App = () => (
                     <Route path="/vasicek" element={<Vasicek />} />
                     <Route path="/capm" element={<CAPM />} />
                     <Route path="/black-scholes" element={<BlackScholes />} />
+                    <Route path="/hull-white" element={<HullWhite />} />
+                    <Route path="/monte-carlo" element={<MonteCarlo />} />
+                    <Route path="/financial-ratios" element={<FinancialRatios />} />
                   </Routes>
                 </main>
               </div>

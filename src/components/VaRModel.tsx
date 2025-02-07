@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,12 +14,15 @@ export function VaRModel() {
   const [portfolioValue, setPortfolioValue] = useState(1000000);
   const [historicalData, setHistoricalData] = useState("");
 
-  const calculateVaR = () => {
+  const varResult = useMemo(() => {
     const returnValues = historicalData
       .split("\n")
       .map(Number)
       .filter((n) => !isNaN(n));
-    setReturns(returnValues);
+    
+    if (returnValues.length === 0) {
+      return { value: 0, percentile: 0 };
+    }
 
     const sortedReturns = [...returnValues].sort((a, b) => a - b);
     const index = Math.floor(((100 - confidenceLevel) / 100) * sortedReturns.length);
@@ -29,9 +32,16 @@ export function VaRModel() {
       value: varValue * portfolioValue,
       percentile: varValue * 100
     };
-  };
+  }, [historicalData, confidenceLevel, portfolioValue]);
 
-  const varResult = calculateVaR();
+  const handleDataChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setHistoricalData(e.target.value);
+    const returnValues = e.target.value
+      .split("\n")
+      .map(Number)
+      .filter((n) => !isNaN(n));
+    setReturns(returnValues);
+  };
 
   const chartData = returns.map((ret, index) => ({
     index,
@@ -73,7 +83,7 @@ export function VaRModel() {
                 id="historical-data"
                 className="w-full min-h-[200px] p-2 border rounded"
                 value={historicalData}
-                onChange={(e) => setHistoricalData(e.target.value)}
+                onChange={handleDataChange}
                 placeholder="Enter historical returns, one per line&#10;Example:&#10;0.02&#10;-0.01&#10;0.03"
               />
             </div>

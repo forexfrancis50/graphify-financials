@@ -7,22 +7,19 @@ import { MetricsCard } from "@/components/shared/MetricsCard";
 import { DataChart } from "@/components/shared/DataChart";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 export function VaRModel() {
   const [returns, setReturns] = useState<number[]>([]);
   const [confidenceLevel, setConfidenceLevel] = useState(95);
   const [portfolioValue, setPortfolioValue] = useState(1000000);
-  const [historicalData, setHistoricalData] = useState("");
+  const [currentReturn, setCurrentReturn] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const varResult = useMemo(() => {
     try {
-      const returnValues = historicalData
-        .split("\n")
-        .map(Number)
-        .filter((n) => !isNaN(n));
-      
-      if (returnValues.length === 0) {
+      if (returns.length === 0) {
         return { value: 0, percentile: 0 };
       }
 
@@ -30,7 +27,7 @@ export function VaRModel() {
         throw new Error("Confidence level must be between 0 and 100");
       }
 
-      const sortedReturns = [...returnValues].sort((a, b) => a - b);
+      const sortedReturns = [...returns].sort((a, b) => a - b);
       const index = Math.floor(((100 - confidenceLevel) / 100) * sortedReturns.length);
       const varValue = -sortedReturns[index];
       
@@ -42,16 +39,38 @@ export function VaRModel() {
       setError(err instanceof Error ? err.message : "Invalid calculation");
       return { value: 0, percentile: 0 };
     }
-  }, [historicalData, confidenceLevel, portfolioValue]);
+  }, [returns, confidenceLevel, portfolioValue]);
 
-  const handleDataChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const addDataPoint = () => {
+    const returnValue = parseFloat(currentReturn);
+
+    if (isNaN(returnValue)) {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter a valid number for the return value",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setReturns(prev => [...prev, returnValue / 100]); // Convert percentage to decimal
+    setCurrentReturn("");
     setError(null);
-    setHistoricalData(e.target.value);
-    const returnValues = e.target.value
-      .split("\n")
-      .map(Number)
-      .filter((n) => !isNaN(n));
-    setReturns(returnValues);
+
+    toast({
+      title: "Data Point Added",
+      description: "New return value has been added to the dataset",
+    });
+  };
+
+  const clearData = () => {
+    setReturns([]);
+    setCurrentReturn("");
+    setError(null);
+    toast({
+      title: "Data Cleared",
+      description: "All return data has been cleared",
+    });
   };
 
   const handleConfidenceLevelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +100,7 @@ export function VaRModel() {
         <h2 className="text-2xl font-bold mb-6">Value at Risk (VaR) Calculator</h2>
         
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
               <Label htmlFor="portfolio-value">Portfolio Value ($)</Label>
               <Input
@@ -109,19 +128,40 @@ export function VaRModel() {
                 Enter a value between 1 and 99
               </p>
             </div>
-            
+
+            <div className="p-4 bg-muted rounded-lg">
+              <h3 className="font-medium mb-2">Return Data Entry</h3>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="return-value">Return Value (%)</Label>
+                  <Input
+                    id="return-value"
+                    type="number"
+                    step="0.01"
+                    value={currentReturn}
+                    onChange={(e) => setCurrentReturn(e.target.value)}
+                    placeholder="e.g., 2.5"
+                    className="mt-1"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={addDataPoint} className="flex-1">
+                    Add Data Point
+                  </Button>
+                  <Button onClick={clearData} variant="outline" className="flex-1">
+                    Clear All
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             <div>
-              <Label htmlFor="historical-data">Historical Returns (one per line)</Label>
-              <textarea
-                id="historical-data"
-                className="w-full min-h-[200px] p-2 border rounded mt-1"
-                value={historicalData}
-                onChange={handleDataChange}
-                placeholder="Enter decimal values, one per line&#10;Example:&#10;0.02&#10;-0.01&#10;0.03"
-              />
-              <p className="text-sm text-muted-foreground mt-1">
-                Enter returns as decimals (e.g., 0.05 for 5%)
-              </p>
+              <Label>Current Dataset</Label>
+              <div className="bg-muted p-2 rounded-md min-h-[100px] mt-1 text-sm">
+                {returns.map((ret, i) => (
+                  <div key={i}>{(ret * 100).toFixed(2)}%</div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -151,7 +191,8 @@ export function VaRModel() {
               <ol className="list-decimal list-inside space-y-1 text-sm">
                 <li>Enter your total portfolio value</li>
                 <li>Set your desired confidence level (typically 95% or 99%)</li>
-                <li>Input historical returns as decimal values (one per line)</li>
+                <li>Add historical returns one by one using the data entry form</li>
+                <li>The VaR will update automatically as you add data</li>
               </ol>
             </div>
           </div>

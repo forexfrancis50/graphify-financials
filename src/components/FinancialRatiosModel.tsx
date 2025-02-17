@@ -4,203 +4,199 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-
-interface FinancialInputs {
-  revenue: number;
-  netIncome: number;
-  totalAssets: number;
-  totalLiabilities: number;
-  shareholdersEquity: number;
-  currentAssets: number;
-  currentLiabilities: number;
-  inventory: number;
-}
-
-interface FinancialRatios {
-  name: string;
-  value: number;
-}
+import { MetricsCard } from "@/components/shared/MetricsCard";
+import { DollarSign, Percent } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export function FinancialRatiosModel() {
-  const { toast } = useToast();
-  const [inputs, setInputs] = useState<FinancialInputs>({
-    revenue: 1000000,
-    netIncome: 100000,
-    totalAssets: 2000000,
-    totalLiabilities: 1000000,
-    shareholdersEquity: 1000000,
-    currentAssets: 800000,
-    currentLiabilities: 400000,
-    inventory: 300000,
+  const [netIncome, setNetIncome] = useState(0);
+  const [totalAssets, setTotalAssets] = useState(0);
+  const [totalEquity, setTotalEquity] = useState(0);
+  const [totalLiabilities, setTotalLiabilities] = useState(0);
+  const [currentAssets, setCurrentAssets] = useState(0);
+  const [currentLiabilities, setCurrentLiabilities] = useState(0);
+  const [revenue, setRevenue] = useState(0);
+
+  const [ratios, setRatios] = useState({
+    roa: 0,
+    roe: 0,
+    currentRatio: 0,
+    debtToEquity: 0,
+    profitMargin: 0,
   });
 
-  const [ratios, setRatios] = useState<FinancialRatios[]>([]);
+  const { toast } = useToast();
 
   const calculateRatios = () => {
-    const newRatios = [
-      {
-        name: "Net Profit Margin",
-        value: Number(((inputs.netIncome / inputs.revenue) * 100).toFixed(2)),
-      },
-      {
-        name: "ROA",
-        value: Number(((inputs.netIncome / inputs.totalAssets) * 100).toFixed(2)),
-      },
-      {
-        name: "ROE",
-        value: Number(((inputs.netIncome / inputs.shareholdersEquity) * 100).toFixed(2)),
-      },
-      {
-        name: "Current Ratio",
-        value: Number((inputs.currentAssets / inputs.currentLiabilities).toFixed(2)),
-      },
-      {
-        name: "Quick Ratio",
-        value: Number(((inputs.currentAssets - inputs.inventory) / inputs.currentLiabilities).toFixed(2)),
-      },
-      {
-        name: "Debt to Equity",
-        value: Number((inputs.totalLiabilities / inputs.shareholdersEquity).toFixed(2)),
-      },
-    ];
+    try {
+      if (totalAssets === 0 || totalEquity === 0 || currentLiabilities === 0 || revenue === 0) {
+        throw new Error("Values cannot be zero");
+      }
 
-    setRatios(newRatios);
-    toast({
-      title: "Ratios Calculated",
-      description: "Financial ratios have been updated based on the input values",
-    });
+      const roa = (netIncome / totalAssets) * 100;
+      const roe = (netIncome / totalEquity) * 100;
+      const currentRatio = currentAssets / currentLiabilities;
+      const debtToEquity = totalLiabilities / totalEquity;
+      const profitMargin = (netIncome / revenue) * 100;
+
+      setRatios({
+        roa,
+        roe,
+        currentRatio,
+        debtToEquity,
+        profitMargin,
+      });
+
+      toast({
+        title: "Calculation Complete",
+        description: "Financial ratios have been calculated",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Invalid calculation",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <h1 className="text-3xl font-bold text-primary">Financial Ratios Analysis</h1>
-      
-      <div className="grid md:grid-cols-2 gap-6">
-        <Card className="p-6 space-y-4">
-          <h2 className="text-xl font-semibold">Financial Data</h2>
+    <div className="space-y-6">
+      <Card className="p-6">
+        <h2 className="text-2xl font-bold mb-6">Financial Ratios Calculator</h2>
+        
+        <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="revenue">Revenue</Label>
+            <div>
+              <Label htmlFor="net-income">Net Income ($)</Label>
+              <Input
+                id="net-income"
+                type="number"
+                value={netIncome}
+                onChange={(e) => setNetIncome(Number(e.target.value))}
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="total-assets">Total Assets ($)</Label>
+              <Input
+                id="total-assets"
+                type="number"
+                value={totalAssets}
+                onChange={(e) => setTotalAssets(Number(e.target.value))}
+                min="0"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="total-equity">Total Equity ($)</Label>
+              <Input
+                id="total-equity"
+                type="number"
+                value={totalEquity}
+                onChange={(e) => setTotalEquity(Number(e.target.value))}
+                min="0"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="total-liabilities">Total Liabilities ($)</Label>
+              <Input
+                id="total-liabilities"
+                type="number"
+                value={totalLiabilities}
+                onChange={(e) => setTotalLiabilities(Number(e.target.value))}
+                min="0"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="current-assets">Current Assets ($)</Label>
+              <Input
+                id="current-assets"
+                type="number"
+                value={currentAssets}
+                onChange={(e) => setCurrentAssets(Number(e.target.value))}
+                min="0"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="current-liabilities">Current Liabilities ($)</Label>
+              <Input
+                id="current-liabilities"
+                type="number"
+                value={currentLiabilities}
+                onChange={(e) => setCurrentLiabilities(Number(e.target.value))}
+                min="0"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="revenue">Revenue ($)</Label>
               <Input
                 id="revenue"
                 type="number"
-                value={inputs.revenue}
-                onChange={(e) => setInputs({ ...inputs, revenue: Number(e.target.value) })}
+                value={revenue}
+                onChange={(e) => setRevenue(Number(e.target.value))}
+                min="0"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="netIncome">Net Income</Label>
-              <Input
-                id="netIncome"
-                type="number"
-                value={inputs.netIncome}
-                onChange={(e) => setInputs({ ...inputs, netIncome: Number(e.target.value) })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="totalAssets">Total Assets</Label>
-              <Input
-                id="totalAssets"
-                type="number"
-                value={inputs.totalAssets}
-                onChange={(e) => setInputs({ ...inputs, totalAssets: Number(e.target.value) })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="totalLiabilities">Total Liabilities</Label>
-              <Input
-                id="totalLiabilities"
-                type="number"
-                value={inputs.totalLiabilities}
-                onChange={(e) => setInputs({ ...inputs, totalLiabilities: Number(e.target.value) })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="shareholdersEquity">Shareholders Equity</Label>
-              <Input
-                id="shareholdersEquity"
-                type="number"
-                value={inputs.shareholdersEquity}
-                onChange={(e) => setInputs({ ...inputs, shareholdersEquity: Number(e.target.value) })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="currentAssets">Current Assets</Label>
-              <Input
-                id="currentAssets"
-                type="number"
-                value={inputs.currentAssets}
-                onChange={(e) => setInputs({ ...inputs, currentAssets: Number(e.target.value) })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="currentLiabilities">Current Liabilities</Label>
-              <Input
-                id="currentLiabilities"
-                type="number"
-                value={inputs.currentLiabilities}
-                onChange={(e) => setInputs({ ...inputs, currentLiabilities: Number(e.target.value) })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="inventory">Inventory</Label>
-              <Input
-                id="inventory"
-                type="number"
-                value={inputs.inventory}
-                onChange={(e) => setInputs({ ...inputs, inventory: Number(e.target.value) })}
-              />
-            </div>
+            <Button onClick={calculateRatios} className="w-full">
+              Calculate Ratios
+            </Button>
           </div>
 
-          <Button onClick={calculateRatios} className="w-full mt-4">
-            Calculate Financial Ratios
-          </Button>
-        </Card>
+          <div className="space-y-4">
+            <MetricsCard
+              title="Return on Assets (ROA)"
+              value={`${ratios.roa.toFixed(2)}%`}
+              description="Net Income / Total Assets"
+              icon={Percent}
+            />
 
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Financial Ratios</h2>
-          {ratios.length > 0 ? (
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={ratios}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="name" 
-                  angle={-45}
-                  textAnchor="end"
-                  height={100}
-                />
-                <YAxis 
-                  label={{ value: 'Value', angle: -90, position: 'left' }}
-                />
-                <Tooltip />
-                <Bar dataKey="value" fill="#1E293B" />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="h-[400px] flex items-center justify-center text-muted-foreground">
-              Calculate ratios to see the visualization
+            <MetricsCard
+              title="Return on Equity (ROE)"
+              value={`${ratios.roe.toFixed(2)}%`}
+              description="Net Income / Total Equity"
+              icon={Percent}
+            />
+
+            <MetricsCard
+              title="Current Ratio"
+              value={ratios.currentRatio.toFixed(2)}
+              description="Current Assets / Current Liabilities"
+              icon={DollarSign}
+            />
+
+            <MetricsCard
+              title="Debt to Equity"
+              value={ratios.debtToEquity.toFixed(2)}
+              description="Total Liabilities / Total Equity"
+              icon={DollarSign}
+            />
+
+            <MetricsCard
+              title="Profit Margin"
+              value={`${ratios.profitMargin.toFixed(2)}%`}
+              description="Net Income / Revenue"
+              icon={Percent}
+            />
+
+            <div className="p-4 bg-muted rounded-lg">
+              <h3 className="font-medium mb-2">About Financial Ratios:</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                <li>ROA measures how efficiently a company uses its assets</li>
+                <li>ROE shows the return generated on shareholders' equity</li>
+                <li>Current Ratio indicates short-term liquidity</li>
+                <li>Debt to Equity shows financial leverage</li>
+                <li>Profit Margin reflects operational efficiency</li>
+              </ul>
             </div>
-          )}
-        </Card>
-      </div>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }

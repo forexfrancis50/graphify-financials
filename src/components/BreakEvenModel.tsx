@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,6 +7,7 @@ import { MetricsCard } from "@/components/shared/MetricsCard";
 import { DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DataChart } from "@/components/shared/DataChart";
+import { ExportButtons } from "@/components/shared/ExportButtons";
 
 export function BreakEvenModel() {
   const [fixedCosts, setFixedCosts] = useState(0);
@@ -42,7 +42,6 @@ export function BreakEvenModel() {
     }
   };
 
-  // Generate data for the break-even chart
   const generateChartData = () => {
     const data = [];
     const maxUnits = Math.ceil(breakEvenUnits * 2);
@@ -59,10 +58,28 @@ export function BreakEvenModel() {
     return data;
   };
 
+  const getExportData = () => {
+    const chartData = generateChartData();
+    return chartData.map(point => ({
+      Units: point.units,
+      Revenue: point.revenue,
+      'Total Costs': point.totalCosts,
+      'Profit/Loss': point.revenue - point.totalCosts
+    }));
+  };
+
   return (
     <div className="space-y-6">
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-6">Break-Even Analysis</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Break-Even Analysis</h2>
+          {breakEvenUnits > 0 && (
+            <ExportButtons
+              title="break_even_analysis"
+              data={getExportData()}
+            />
+          )}
+        </div>
         
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-4">

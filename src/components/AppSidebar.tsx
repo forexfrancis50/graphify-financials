@@ -60,6 +60,8 @@ export function AppSidebar() {
     { name: "Value at Risk (VaR)", path: "/var", icon: <AlertTriangle className="h-4 w-4" /> },
     { name: "Beta Calculator", path: "/beta", icon: <TrendingUpIcon className="h-4 w-4" /> },
     { name: "Sharpe Ratio", path: "/sharpe-ratio", icon: <BarChart4 className="h-4 w-4" /> },
+    { name: "WACC Calculator", path: "/wacc", icon: <Percent className="h-4 w-4" /> },
+    { name: "EV/EBITDA", path: "/ev-ebitda", icon: <DollarSign className="h-4 w-4" /> }
   ];
 
   return (

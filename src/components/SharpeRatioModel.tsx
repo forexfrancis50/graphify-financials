@@ -7,28 +7,30 @@ import { Label } from "@/components/ui/label";
 import { MetricsCard } from "@/components/shared/MetricsCard";
 import { DataChart } from "@/components/shared/DataChart";
 import { LineChart } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export function SharpeRatioModel() {
-  const [returns, setReturns] = useState("");
+  const [returns, setReturns] = useState<number[]>([]);
+  const [currentReturn, setCurrentReturn] = useState("");
   const [riskFreeRate, setRiskFreeRate] = useState(0.02);
   const [sharpeRatio, setSharpeRatio] = useState(0);
   const [excessReturn, setExcessReturn] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const calculateSharpeRatio = () => {
     try {
       setError(null);
-      const returnValues = returns.split("\n").map(Number).filter(n => !isNaN(n));
       
-      if (returnValues.length < 2) {
+      if (returns.length < 2) {
         throw new Error("Need at least 2 return observations to calculate Sharpe ratio");
       }
 
-      const meanReturn = returnValues.reduce((a, b) => a + b, 0) / returnValues.length;
+      const meanReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
       const excess = meanReturn - riskFreeRate;
       
-      const variance = returnValues.reduce((acc, val) => 
-        acc + Math.pow(val - meanReturn, 2), 0) / returnValues.length;
+      const variance = returns.reduce((acc, val) => 
+        acc + Math.pow(val - meanReturn, 2), 0) / returns.length;
       const stdDev = Math.sqrt(variance);
       
       if (stdDev === 0) {
@@ -39,11 +41,56 @@ export function SharpeRatioModel() {
       
       setSharpeRatio(sharpe);
       setExcessReturn(excess);
+
+      toast({
+        title: "Calculation Complete",
+        description: `Sharpe Ratio: ${sharpe.toFixed(2)}`,
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error calculating Sharpe ratio");
+      const errorMessage = err instanceof Error ? err.message : "Error calculating Sharpe ratio";
+      setError(errorMessage);
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
       setSharpeRatio(0);
       setExcessReturn(0);
     }
+  };
+
+  const addDataPoint = () => {
+    const returnValue = parseFloat(currentReturn);
+
+    if (isNaN(returnValue)) {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter a valid number for the return value",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setReturns(prev => [...prev, returnValue / 100]); // Convert percentage to decimal
+    setCurrentReturn("");
+    setError(null);
+
+    toast({
+      title: "Data Point Added",
+      description: "New return value has been added to the dataset",
+    });
+  };
+
+  const clearData = () => {
+    setReturns([]);
+    setCurrentReturn("");
+    setSharpeRatio(0);
+    setExcessReturn(0);
+    setError(null);
+    toast({
+      title: "Data Cleared",
+      description: "All return data has been cleared",
+    });
   };
 
   const handleRiskFreeRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,11 +100,11 @@ export function SharpeRatioModel() {
     }
   };
 
-  const chartData = returns.split("\n").map((ret, index) => ({
+  const chartData = returns.map((ret, index) => ({
     index,
-    return: Number(ret) * 100,
+    return: ret * 100,
     riskFree: riskFreeRate * 100
-  })).filter(d => !isNaN(d.return));
+  }));
 
   return (
     <div className="space-y-6">
@@ -65,21 +112,7 @@ export function SharpeRatioModel() {
         <h2 className="text-2xl font-bold mb-6">Sharpe Ratio Calculator</h2>
         
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="returns">Portfolio Returns (one per line)</Label>
-              <textarea
-                id="returns"
-                className="w-full min-h-[200px] p-2 border rounded mt-1"
-                value={returns}
-                onChange={(e) => setReturns(e.target.value)}
-                placeholder="Enter decimal values, one per line&#10;Example:&#10;0.02&#10;-0.01&#10;0.03"
-              />
-              <p className="text-sm text-muted-foreground mt-1">
-                Enter returns as decimals (e.g., 0.05 for 5%)
-              </p>
-            </div>
-            
+          <div className="space-y-6">
             <div>
               <Label htmlFor="risk-free-rate">Risk-Free Rate</Label>
               <Input
@@ -97,7 +130,44 @@ export function SharpeRatioModel() {
               </p>
             </div>
 
-            <Button onClick={calculateSharpeRatio}>Calculate Sharpe Ratio</Button>
+            <div className="p-4 bg-muted rounded-lg">
+              <h3 className="font-medium mb-2">Return Data Entry</h3>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="return-value">Return Value (%)</Label>
+                  <Input
+                    id="return-value"
+                    type="number"
+                    step="0.01"
+                    value={currentReturn}
+                    onChange={(e) => setCurrentReturn(e.target.value)}
+                    placeholder="e.g., 2.5"
+                    className="mt-1"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={addDataPoint} className="flex-1">
+                    Add Data Point
+                  </Button>
+                  <Button onClick={clearData} variant="outline" className="flex-1">
+                    Clear All
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <Label>Current Dataset</Label>
+              <div className="bg-muted p-2 rounded-md min-h-[100px] mt-1 text-sm">
+                {returns.map((ret, i) => (
+                  <div key={i}>{(ret * 100).toFixed(2)}%</div>
+                ))}
+              </div>
+            </div>
+
+            <Button onClick={calculateSharpeRatio} className="w-full">
+              Calculate Sharpe Ratio
+            </Button>
           </div>
 
           <div className="space-y-6">
@@ -124,16 +194,17 @@ export function SharpeRatioModel() {
             <div className="p-4 bg-muted rounded-lg">
               <h3 className="font-medium mb-2">How to use this calculator:</h3>
               <ol className="list-decimal list-inside space-y-1 text-sm">
-                <li>Enter historical portfolio returns (one per line)</li>
                 <li>Set the risk-free rate (e.g., Treasury bill rate)</li>
-                <li>Click "Calculate Sharpe Ratio" to see results</li>
+                <li>Enter portfolio returns one at a time (as percentages)</li>
+                <li>Click "Add Data Point" to add each return</li>
+                <li>Once you have added all returns, click "Calculate Sharpe Ratio"</li>
               </ol>
             </div>
           </div>
         </div>
       </Card>
 
-      {chartData.length > 0 && (
+      {returns.length > 0 && (
         <DataChart
           data={chartData}
           type="line"

@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -10,7 +11,8 @@ import {
   PieChart,
   Workflow,
   Lightbulb,
-  TrendingUp
+  TrendingUp,
+  Database
 } from "lucide-react";
 import {
   Accordion,
@@ -18,6 +20,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { FinancialDataFetcher } from "@/components/shared/FinancialDataFetcher";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -132,6 +135,19 @@ export default function Index() {
               Explore M&A Tools <BarChart2 className="w-4 h-4" />
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* Financial Data Fetcher Section */}
+      <section className="py-16 px-6 bg-primary/5">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <Database className="h-6 w-6 text-primary" />
+            <h2 className="text-3xl font-bold text-center">
+              Financial Data Aggregator
+            </h2>
+          </div>
+          <FinancialDataFetcher />
         </div>
       </section>
 

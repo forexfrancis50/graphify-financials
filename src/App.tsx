@@ -34,6 +34,7 @@ import Beta from "./pages/Beta";
 import SharpeRatio from "./pages/SharpeRatio";
 import WACC from "./pages/WACC";
 import EVEBITDA from "./pages/EVEBITDA";
+import FinancialData from "./pages/FinancialData";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,7 @@ const App = () => (
                     <Route path="/sharpe-ratio" element={<SharpeRatio />} />
                     <Route path="/wacc" element={<WACC />} />
                     <Route path="/ev-ebitda" element={<EVEBITDA />} />
+                    <Route path="/financial-data" element={<FinancialData />} />
                   </Routes>
                 </main>
               </div>

@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DataChart } from "@/components/shared/DataChart";
 import { ExportButtons } from "@/components/shared/ExportButtons";
+import { FinancialDataImporter } from "@/components/shared/FinancialDataImporter";
 
 export function BreakEvenModel() {
   const [fixedCosts, setFixedCosts] = useState(0);
@@ -16,6 +18,45 @@ export function BreakEvenModel() {
   const [breakEvenUnits, setBreakEvenUnits] = useState(0);
   const [breakEvenRevenue, setBreakEvenRevenue] = useState(0);
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Check if we have saved data
+    const savedData = localStorage.getItem('breakEvenModelData');
+    if (savedData) {
+      try {
+        const data = JSON.parse(savedData);
+        setFixedCosts(data.fixedCosts || 0);
+        setVariableCost(data.variableCost || 0);
+        setSellingPrice(data.sellingPrice || 0);
+      } catch (e) {
+        console.error("Error loading saved break-even data:", e);
+      }
+    }
+
+    // Listen for data import events
+    const handleDataImport = (e: Event) => {
+      if ((e as CustomEvent).detail.modelType === 'breakEven') {
+        const data = (e as CustomEvent).detail.data;
+        setFixedCosts(data.fixedCosts || 0);
+        setVariableCost(data.variableCost || 0);
+        setSellingPrice(data.sellingPrice || 0);
+      }
+    };
+
+    window.addEventListener('modelDataImported', handleDataImport);
+    
+    return () => {
+      window.removeEventListener('modelDataImported', handleDataImport);
+    };
+  }, []);
+
+  const handleDataImport = (data: any) => {
+    if (data) {
+      setFixedCosts(data.fixedCosts || 0);
+      setVariableCost(data.variableCost || 0);
+      setSellingPrice(data.sellingPrice || 0);
+    }
+  };
 
   const calculateBreakEven = () => {
     try {
@@ -28,6 +69,13 @@ export function BreakEvenModel() {
 
       setBreakEvenUnits(units);
       setBreakEvenRevenue(revenue);
+
+      // Save the input values to localStorage
+      localStorage.setItem('breakEvenModelData', JSON.stringify({
+        fixedCosts,
+        variableCost,
+        sellingPrice
+      }));
 
       toast({
         title: "Calculation Complete",
@@ -83,6 +131,11 @@ export function BreakEvenModel() {
         
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-4">
+            <FinancialDataImporter 
+              activeModelType="breakEven" 
+              onDataImported={handleDataImport} 
+            />
+            
             <div>
               <Label htmlFor="fixed-costs">Fixed Costs ($)</Label>
               <Input
@@ -139,6 +192,7 @@ export function BreakEvenModel() {
             <div className="p-4 bg-muted rounded-lg">
               <h3 className="font-medium mb-2">How to use this calculator:</h3>
               <ol className="list-decimal list-inside space-y-1 text-sm">
+                <li>Import financial data or enter your values manually</li>
                 <li>Enter your total fixed costs</li>
                 <li>Input the variable cost per unit</li>
                 <li>Set the selling price per unit</li>

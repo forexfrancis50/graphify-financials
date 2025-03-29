@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { MetricsCard } from "@/components/shared/MetricsCard";
 import { DollarSign, Percent } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ExportButtons } from "@/components/shared/ExportButtons";
+import { FinancialDataImporter } from "@/components/shared/FinancialDataImporter";
 
 export function FinancialRatiosModel() {
   const [netIncome, setNetIncome] = useState(0);
@@ -26,6 +28,57 @@ export function FinancialRatiosModel() {
   });
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Check if we have saved data
+    const savedData = localStorage.getItem('financialRatiosModelData');
+    if (savedData) {
+      try {
+        const data = JSON.parse(savedData);
+        setNetIncome(data.netIncome || 0);
+        setTotalAssets(data.totalAssets || 0);
+        setTotalEquity(data.totalEquity || 0);
+        setTotalLiabilities(data.totalLiabilities || 0);
+        setCurrentAssets(data.currentAssets || 0);
+        setCurrentLiabilities(data.currentLiabilities || 0);
+        setRevenue(data.revenue || 0);
+      } catch (e) {
+        console.error("Error loading saved financial ratios data:", e);
+      }
+    }
+
+    // Listen for data import events
+    const handleDataImport = (e: Event) => {
+      if ((e as CustomEvent).detail.modelType === 'financialRatios') {
+        const data = (e as CustomEvent).detail.data;
+        setNetIncome(data.netIncome || 0);
+        setTotalAssets(data.totalAssets || 0);
+        setTotalEquity(data.totalEquity || 0);
+        setTotalLiabilities(data.totalLiabilities || 0);
+        setCurrentAssets(data.currentAssets || 0);
+        setCurrentLiabilities(data.currentLiabilities || 0);
+        setRevenue(data.revenue || 0);
+      }
+    };
+
+    window.addEventListener('modelDataImported', handleDataImport);
+    
+    return () => {
+      window.removeEventListener('modelDataImported', handleDataImport);
+    };
+  }, []);
+
+  const handleDataImport = (data: any) => {
+    if (data) {
+      setNetIncome(data.netIncome || 0);
+      setTotalAssets(data.totalAssets || 0);
+      setTotalEquity(data.totalEquity || 0);
+      setTotalLiabilities(data.totalLiabilities || 0);
+      setCurrentAssets(data.currentAssets || 0);
+      setCurrentLiabilities(data.currentLiabilities || 0);
+      setRevenue(data.revenue || 0);
+    }
+  };
 
   const calculateRatios = () => {
     try {
@@ -47,6 +100,17 @@ export function FinancialRatiosModel() {
         profitMargin,
       });
 
+      // Save the input values
+      localStorage.setItem('financialRatiosModelData', JSON.stringify({
+        netIncome,
+        totalAssets,
+        totalEquity,
+        totalLiabilities,
+        currentAssets,
+        currentLiabilities,
+        revenue
+      }));
+
       toast({
         title: "Calculation Complete",
         description: "Financial ratios have been calculated",
@@ -60,13 +124,44 @@ export function FinancialRatiosModel() {
     }
   };
 
+  const getExportData = () => {
+    return [{
+      "Net Income": netIncome,
+      "Total Assets": totalAssets,
+      "Total Equity": totalEquity,
+      "Total Liabilities": totalLiabilities,
+      "Current Assets": currentAssets,
+      "Current Liabilities": currentLiabilities,
+      "Revenue": revenue,
+      "ROA (%)": ratios.roa,
+      "ROE (%)": ratios.roe,
+      "Current Ratio": ratios.currentRatio,
+      "Debt to Equity": ratios.debtToEquity,
+      "Profit Margin (%)": ratios.profitMargin,
+      "Date": new Date().toISOString().split('T')[0]
+    }];
+  };
+
   return (
     <div className="space-y-6">
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-6">Financial Ratios Calculator</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Financial Ratios Calculator</h2>
+          {ratios.roa > 0 && (
+            <ExportButtons
+              title="financial_ratios_analysis"
+              data={getExportData()}
+            />
+          )}
+        </div>
         
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-4">
+            <FinancialDataImporter 
+              activeModelType="financialRatios" 
+              onDataImported={handleDataImport} 
+            />
+            
             <div>
               <Label htmlFor="net-income">Net Income ($)</Label>
               <Input

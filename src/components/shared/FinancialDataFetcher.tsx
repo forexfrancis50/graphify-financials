@@ -200,18 +200,20 @@ export function FinancialDataFetcher() {
               Data Source
             </label>
             <div className="flex gap-2">
-              <Select value={selectedSource} onValueChange={setSelectedSource} className="flex-1">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a source" />
-                </SelectTrigger>
-                <SelectContent>
-                  {supportedSources.map((source) => (
-                    <SelectItem key={source.name} value={source.name}>
-                      {source.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex-1">
+                <Select value={selectedSource} onValueChange={setSelectedSource}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a source" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {supportedSources.map((source) => (
+                      <SelectItem key={source.name} value={source.name}>
+                        {source.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               
               <Button variant="outline" size="icon" onClick={() => setApiKeyDialogOpen(true)}>
                 <Key className="h-4 w-4" />

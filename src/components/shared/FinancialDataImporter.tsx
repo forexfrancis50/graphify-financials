@@ -103,38 +103,42 @@ export function FinancialDataImporter({
       <div className="space-y-3">
         <div>
           <label className="text-sm mb-1 block">Select Company Data</label>
-          <Select value={selectedData} onValueChange={setSelectedData}>
-            <SelectTrigger>
-              <SelectValue placeholder="Choose company data" />
-            </SelectTrigger>
-            <SelectContent>
-              {savedData.map((data) => (
-                <SelectItem 
-                  key={`${data.ticker}|${data.source}`} 
-                  value={`${data.ticker}|${data.source}`}
-                >
-                  {data.companyName} ({data.ticker}) - {data.source}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div>
+            <Select value={selectedData} onValueChange={setSelectedData}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose company data" />
+              </SelectTrigger>
+              <SelectContent>
+                {savedData.map((data) => (
+                  <SelectItem 
+                    key={`${data.ticker}|${data.source}`} 
+                    value={`${data.ticker}|${data.source}`}
+                  >
+                    {data.companyName} ({data.ticker}) - {data.source}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         
         {!activeModelType && (
           <div>
             <label className="text-sm mb-1 block">Target Model</label>
-            <Select value={selectedModel} onValueChange={setSelectedModel}>
-              <SelectTrigger>
-                <SelectValue placeholder="Choose target model" />
-              </SelectTrigger>
-              <SelectContent>
-                {compatibleModels.map((model) => (
-                  <SelectItem key={model.id} value={model.id}>
-                    {model.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div>
+              <Select value={selectedModel} onValueChange={setSelectedModel}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose target model" />
+                </SelectTrigger>
+                <SelectContent>
+                  {compatibleModels.map((model) => (
+                    <SelectItem key={model.id} value={model.id}>
+                      {model.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         )}
         

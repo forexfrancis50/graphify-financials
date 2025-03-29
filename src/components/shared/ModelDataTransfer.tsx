@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useModelData } from "@/contexts/ModelDataContext";
 import { useToast } from "@/components/ui/use-toast";
@@ -43,18 +44,20 @@ export function ModelDataTransfer({ currentModel, onDataTransfer }: ModelDataTra
 
   return (
     <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg mb-4">
-      <Select value={selectedModel} onValueChange={setSelectedModel}>
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Import data from..." />
-        </SelectTrigger>
-        <SelectContent>
-          {availableModels.map((model) => (
-            <SelectItem key={model} value={model}>
-              {model.toUpperCase()} Model
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div>
+        <Select value={selectedModel} onValueChange={setSelectedModel}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Import data from..." />
+          </SelectTrigger>
+          <SelectContent>
+            {availableModels.map((model) => (
+              <SelectItem key={model} value={model}>
+                {model.toUpperCase()} Model
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       <Button
         variant="secondary"
         onClick={handleTransfer}

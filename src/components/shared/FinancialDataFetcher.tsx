@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/components/ui/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ExportButtons } from "@/components/shared/ExportButtons";
+import { CompatibleCalculators } from "@/components/shared/CompatibleCalculators";
 import { 
   fetchFinancialData, 
   saveFinancialData, 
@@ -333,6 +334,9 @@ export function FinancialDataFetcher() {
                     </ul>
                   </Card>
                 </div>
+
+                {/* Add Compatible Calculators section */}
+                <CompatibleCalculators financialData={currentData} />
               </div>
             ) : (
               <div className="text-center py-12 text-muted-foreground">

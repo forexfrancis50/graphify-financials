@@ -8,12 +8,22 @@ export const mapFinancialDataToModel = (
 ): any => {
   switch (modelType) {
     case 'dcf':
+      // Calculate growth rate based on historical data if available
+      let calculatedGrowthRate = 5; // Default growth rate
+      if (data.incomeStatement?.revenueGrowth) {
+        calculatedGrowthRate = data.incomeStatement.revenueGrowth * 100;
+      }
+      
+      // Calculate operating margin
+      let operatingMargin = 15; // Default operating margin
+      if (data.incomeStatement && data.incomeStatement.revenue && data.incomeStatement.operatingIncome) {
+        operatingMargin = (data.incomeStatement.operatingIncome / data.incomeStatement.revenue) * 100;
+      }
+      
       return {
-        revenue: data.incomeStatement?.revenue || 0,
-        growthRate: 0.05, // Default growth rate
-        operatingMargin: data.incomeStatement
-          ? (data.incomeStatement.operatingIncome / data.incomeStatement.revenue) * 100
-          : 15,
+        revenue: data.incomeStatement?.revenue || 1000000,
+        growthRate: calculatedGrowthRate,
+        operatingMargin: operatingMargin,
         discountRate: 10, // Default discount rate
       };
       

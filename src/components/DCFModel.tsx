@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +17,7 @@ import { SensitivityAnalysis } from "./SensitivityAnalysis";
 import { ComparableAnalysis } from "./ComparableAnalysis";
 import { DCFTemplates } from "./dcf/DCFTemplates";
 import { useToast } from "@/components/ui/use-toast";
+import { FinancialDataImporter } from "./shared/FinancialDataImporter";
 
 interface DCFInputs {
   initialRevenue: number;
@@ -47,40 +48,89 @@ export function DCFModel() {
 
   const [projections, setProjections] = useState<any[]>([]);
 
+  useEffect(() => {
+    const loadModelData = () => {
+      try {
+        const storedData = localStorage.getItem('dcfModelData');
+        if (storedData) {
+          const dcfData = JSON.parse(storedData);
+          
+          setInputs(prevInputs => ({
+            ...prevInputs,
+            initialRevenue: dcfData.revenue || prevInputs.initialRevenue,
+            growthRate: dcfData.growthRate || prevInputs.growthRate,
+            operatingMargin: dcfData.operatingMargin || prevInputs.operatingMargin,
+            discountRate: dcfData.discountRate || prevInputs.discountRate,
+          }));
+          
+          toast({
+            title: "Data Loaded",
+            description: "Financial data has been loaded into the DCF model.",
+          });
+        }
+      } catch (error) {
+        console.error("Error loading DCF model data:", error);
+      }
+    };
+    
+    loadModelData();
+    
+    const handleDataImported = (event: CustomEvent) => {
+      if (event.detail?.modelType === 'dcf') {
+        loadModelData();
+      }
+    };
+    
+    window.addEventListener('modelDataImported', handleDataImported as EventListener);
+    
+    return () => {
+      window.removeEventListener('modelDataImported', handleDataImported as EventListener);
+    };
+  }, [toast]);
+
+  const handleImportedData = (importedData: any) => {
+    if (importedData) {
+      setInputs(prevInputs => ({
+        ...prevInputs,
+        initialRevenue: importedData.revenue || prevInputs.initialRevenue,
+        growthRate: importedData.growthRate || prevInputs.growthRate,
+        operatingMargin: importedData.operatingMargin || prevInputs.operatingMargin,
+        discountRate: importedData.discountRate || prevInputs.discountRate,
+      }));
+      
+      toast({
+        title: "Data Imported",
+        description: "Financial data has been imported into the DCF model.",
+      });
+    }
+  };
+
   const calculateDCF = () => {
     const years = 5;
     const newProjections = [];
     let currentRevenue = inputs.initialRevenue;
 
     for (let year = 1; year <= years; year++) {
-      // Revenue calculation
       currentRevenue *= (1 + inputs.growthRate / 100);
       
-      // Operating income
       const operatingIncome = currentRevenue * (inputs.operatingMargin / 100);
       
-      // Tax calculation
       const taxAmount = operatingIncome * (inputs.taxRate / 100);
       
-      // Working capital changes
       const workingCapital = currentRevenue * (inputs.workingCapitalPercent / 100);
       const previousRevenue = year === 1 ? inputs.initialRevenue : newProjections[year - 2].revenue;
       const workingCapitalChange = (currentRevenue - previousRevenue) * (inputs.workingCapitalPercent / 100);
       
-      // CapEx calculation
       const capex = currentRevenue * (inputs.capexPercent / 100);
       
-      // Free cash flow calculation
       const freeCashFlow = operatingIncome - taxAmount - workingCapitalChange - capex;
       
-      // Terminal value calculation (only for final year)
       let terminalValue = 0;
       if (year === years) {
         const terminalFCF = freeCashFlow * (1 + inputs.terminalGrowthRate / 100);
         terminalValue = terminalFCF / (inputs.discountRate / 100 - inputs.terminalGrowthRate / 100);
       }
       
-      // Discounted cash flow calculation
       const discountFactor = Math.pow(1 + inputs.discountRate / 100, year);
       const discountedCashFlow = freeCashFlow / discountFactor;
       const discountedTerminalValue = terminalValue / discountFactor;
@@ -368,6 +418,14 @@ export function DCFModel() {
         <DCFTemplates
           selectedTemplate={selectedTemplate}
           onTemplateChange={handleTemplateChange}
+        />
+      </div>
+      
+      <div className="bg-muted p-4 rounded-md">
+        <h2 className="text-lg font-medium mb-3">Import Financial Data</h2>
+        <FinancialDataImporter 
+          activeModelType="dcf"
+          onDataImported={handleImportedData}
         />
       </div>
       

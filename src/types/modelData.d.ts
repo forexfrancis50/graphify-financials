@@ -1,3 +1,4 @@
+
 interface ModelData {
   options?: {
     stockPrice: number;
@@ -13,6 +14,11 @@ interface ModelData {
     growthRate: number;
     operatingMargin: number;
     discountRate: number;
+    taxRate?: number;
+    workingCapitalPercent?: number;
+    capexPercent?: number;
+    terminalGrowthRate?: number;
+    historicalRevenue?: number[];
   };
   accretionDilution?: {
     acquirerShares: number;

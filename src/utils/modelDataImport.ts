@@ -1,4 +1,3 @@
-
 import { FinancialData } from "./financialDataScraper";
 
 // Map raw financial data to the specific model data structure
@@ -10,8 +9,9 @@ export const mapFinancialDataToModel = (
     case 'dcf':
       // Calculate growth rate based on historical data if available
       let calculatedGrowthRate = 5; // Default growth rate
-      if (data.incomeStatement?.revenueGrowth) {
-        calculatedGrowthRate = data.incomeStatement.revenueGrowth * 100;
+      if (data.incomeStatement?.revenue) {
+        // Use a default growth rate if historical data isn't available
+        calculatedGrowthRate = 5; // Default to 5% if we can't calculate it
       }
       
       // Calculate operating margin

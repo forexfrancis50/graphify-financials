@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,8 +5,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ModelDataProvider } from "./contexts/ModelDataContext";
+import { ChatProvider } from "./contexts/ChatContext";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { AppSidebar } from "./components/AppSidebar";
+import { Chatbot } from "./components/chatbot/Chatbot";
 import Index from "./pages/Index";
 import DCF from "./pages/DCF";
 import LBO from "./pages/LBO";
@@ -43,46 +44,49 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ModelDataProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <SidebarProvider>
-              <div className="min-h-screen flex w-full">
-                <AppSidebar />
-                <main className="flex-1 overflow-auto">
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/dcf" element={<DCF />} />
-                    <Route path="/lbo" element={<LBO />} />
-                    <Route path="/ma" element={<MA />} />
-                    <Route path="/restructuring" element={<Restructuring />} />
-                    <Route path="/ddm" element={<DDM />} />
-                    <Route path="/accretion-dilution" element={<AccretionDilution />} />
-                    <Route path="/ipo" element={<IPO />} />
-                    <Route path="/capital-budgeting" element={<CapitalBudgeting />} />
-                    <Route path="/options" element={<Options />} />
-                    <Route path="/irr" element={<IRR />} />
-                    <Route path="/npv" element={<NPV />} />
-                    <Route path="/break-even" element={<BreakEven />} />
-                    <Route path="/loan" element={<Loan />} />
-                    <Route path="/roi" element={<ROI />} />
-                    <Route path="/vasicek" element={<Vasicek />} />
-                    <Route path="/capm" element={<CAPM />} />
-                    <Route path="/black-scholes" element={<BlackScholes />} />
-                    <Route path="/hull-white" element={<HullWhite />} />
-                    <Route path="/monte-carlo" element={<MonteCarlo />} />
-                    <Route path="/financial-ratios" element={<FinancialRatios />} />
-                    <Route path="/var" element={<VaR />} />
-                    <Route path="/beta" element={<Beta />} />
-                    <Route path="/sharpe-ratio" element={<SharpeRatio />} />
-                    <Route path="/wacc" element={<WACC />} />
-                    <Route path="/ev-ebitda" element={<EVEBITDA />} />
-                    <Route path="/financial-data" element={<FinancialData />} />
-                  </Routes>
-                </main>
-              </div>
-            </SidebarProvider>
-          </BrowserRouter>
+          <ChatProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <SidebarProvider>
+                <div className="min-h-screen flex w-full">
+                  <AppSidebar />
+                  <main className="flex-1 overflow-auto">
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/dcf" element={<DCF />} />
+                      <Route path="/lbo" element={<LBO />} />
+                      <Route path="/ma" element={<MA />} />
+                      <Route path="/restructuring" element={<Restructuring />} />
+                      <Route path="/ddm" element={<DDM />} />
+                      <Route path="/accretion-dilution" element={<AccretionDilution />} />
+                      <Route path="/ipo" element={<IPO />} />
+                      <Route path="/capital-budgeting" element={<CapitalBudgeting />} />
+                      <Route path="/options" element={<Options />} />
+                      <Route path="/irr" element={<IRR />} />
+                      <Route path="/npv" element={<NPV />} />
+                      <Route path="/break-even" element={<BreakEven />} />
+                      <Route path="/loan" element={<Loan />} />
+                      <Route path="/roi" element={<ROI />} />
+                      <Route path="/vasicek" element={<Vasicek />} />
+                      <Route path="/capm" element={<CAPM />} />
+                      <Route path="/black-scholes" element={<BlackScholes />} />
+                      <Route path="/hull-white" element={<HullWhite />} />
+                      <Route path="/monte-carlo" element={<MonteCarlo />} />
+                      <Route path="/financial-ratios" element={<FinancialRatios />} />
+                      <Route path="/var" element={<VaR />} />
+                      <Route path="/beta" element={<Beta />} />
+                      <Route path="/sharpe-ratio" element={<SharpeRatio />} />
+                      <Route path="/wacc" element={<WACC />} />
+                      <Route path="/ev-ebitda" element={<EVEBITDA />} />
+                      <Route path="/financial-data" element={<FinancialData />} />
+                    </Routes>
+                  </main>
+                </div>
+                <Chatbot />
+              </SidebarProvider>
+            </BrowserRouter>
+          </ChatProvider>
         </ModelDataProvider>
       </TooltipProvider>
     </QueryClientProvider>
